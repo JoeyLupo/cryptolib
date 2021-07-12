@@ -38,14 +38,9 @@ do
   b1 ← uniform_2,
   return (1 + b0 + b1)
 
-local notation `Pr[DDH0]` := DDH0 G g q A 1 
-local notation `Pr[DDH1]` := DDH1 G g q A 1
+local notation `Pr[DDH0]` := (DDH0 G g q A 1 : ℝ)
+local notation `Pr[DDH1]` := (DDH1 G g q A 1 : ℝ)
 
-def DDH_Adv : ℝ := abs (Pr[DDH0] - Pr[DDH1])
-
--- TO-DO need to figure out how to connect with negligible file (or if even necessary)
-def DDH_Adv1 : ℝ := abs (DDH0 1)
-#check DDH0
---def DDH : Prop := DDH_Adv < ε
+def DDH (ε : nnreal) : Prop := abs (Pr[DDH0] - Pr[DDH1]) ≤ ε
 
 end DDH

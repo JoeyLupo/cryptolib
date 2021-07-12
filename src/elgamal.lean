@@ -19,8 +19,8 @@ parameters (G : Type) [fintype G] [group G] [decidable_eq G]
 def M := G
 def C := G × G 
 
-variables (A1 : G → pmf (M × M))
-          (A2 : G × C → pmf (zmod 2))
+parameters (A1 : G → pmf (M × M))
+           (A2 : G × C → pmf (zmod 2))
 
 -- g^x is the public key, and x is the secret key
 def keygen : pmf (G × (zmod q)) := 
@@ -39,6 +39,14 @@ do
 def decrypt (x : zmod q) (c : C) : G := 
   (c.2 / (c.1^x.val))
 
+
+
+/- 
+  -----------------------------------------------------------
+  Proof of correctness of ElGamal
+  -----------------------------------------------------------
+-/
+
 def enc_dec (m : M) : pmf (zmod 2) := 
 do
   (α, x) ← keygen,
@@ -56,15 +64,27 @@ begin
   simp [pmf.pure],
   ext,
   simp,
-  simp [enc_dec._match_1],
+  sorry,
+  -- simp [enc_dec._match_1],
   -- need tactic or lemma that binding with a pure dist is just passing 
   -- that constant along 
   -- lemma ∀ y, (return x) y = x 
 end
 
-#check SSG G (zmod q) M C keygen encrypt A1 A2 1
-local notation `ElGamal_adv` := abs((SSG G (zmod q) M C keygen encrypt A1 A2 1) - 1/2) 
 
-theorem elgamal_secure : is_semantically_secure ElGamal:= sorry
+
+/- 
+  -----------------------------------------------------------
+  Proof of semantic security of ElGamal
+  -----------------------------------------------------------
+-/
+
+parameters (ε : nnreal) 
+           (DDH_G : DDH G g q A2 ε)
+
+theorem elgamal_secure :  is_semantically_secure keygen encrypt A1 A2 ε := 
+begin
+  sorry,  
+end
 
 end elgamal
