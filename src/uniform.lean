@@ -25,7 +25,19 @@ begin
   simp,
 end
 
--- TO-DO finite group G? needed?
+variables (G : Type) [fintype G] [group G] 
+
+lemma grp_ne_zero : (fintype.elems G).val ≠ 0 := 
+begin
+  have e : G := (_inst_2.one),
+  have h1 : e ∈ (fintype.elems G).val :=  finset.mem_univ e,
+  have h2 : 0 < multiset.card (fintype.elems G).val := 
+  begin
+    apply (multiset.card_pos_iff_exists_mem).mpr,
+    exact Exists.intro e h1,
+  end,
+  exact multiset.card_pos.mp h2,
+end
 
 noncomputable theory 
 
@@ -34,9 +46,6 @@ def uniform_zmod (n : ℕ) [fact (0 < n)] : pmf (zmod n) :=
   pmf.of_multiset (zmod.fintype n).elems.val (zmod_ne_zero n)
 
 def uniform_2 := uniform_zmod 2
-
-def uniform_bitvec (n : ℕ) : pmf (bitvec n) := 
-  pmf.of_multiset (bitvec.fintype n).elems.val (bitvec_ne_zero n)
 
 lemma prob_half : uniform_2 1 = (0.5 : nnreal) := 
 begin
@@ -47,3 +56,9 @@ begin
   rw h,
   sorry,
 end
+
+def uniform_bitvec (n : ℕ) : pmf (bitvec n) := 
+  pmf.of_multiset (bitvec.fintype n).elems.val (bitvec_ne_zero n)
+
+def uniform_grp : pmf G := 
+  pmf.of_multiset (fintype.elems G).val (grp_ne_zero G)
