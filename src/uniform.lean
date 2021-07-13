@@ -25,7 +25,7 @@ begin
   simp,
 end
 
-variables (G : Type) [fintype G] [group G] 
+variables (G : Type) [fintype G] [group G] [decidable_eq G]
 
 lemma grp_ne_zero : (fintype.elems G).val ≠ 0 := 
 begin
@@ -47,7 +47,7 @@ def uniform_zmod (n : ℕ) [fact (0 < n)] : pmf (zmod n) :=
 
 def uniform_2 := uniform_zmod 2
 
-lemma prob_half : uniform_2 1 = (0.5 : nnreal) := 
+lemma uniform2_prob : uniform_2 1 = (0.5 : nnreal) := 
 begin
   simp [uniform_2],
   simp [uniform_zmod],
@@ -62,3 +62,23 @@ def uniform_bitvec (n : ℕ) : pmf (bitvec n) :=
 
 def uniform_grp : pmf G := 
   pmf.of_multiset (fintype.elems G).val (grp_ne_zero G)
+
+theorem uniform_prob : ∀ (g : G), (uniform_grp G) g = 1 / multiset.card (fintype.elems G).val :=
+begin
+  intro g,
+  simp [uniform_grp],
+  have h1 : 
+  (pmf.of_multiset (fintype.elems G).val (grp_ne_zero G)) g = 
+    multiset.count g (fintype.elems G).val / multiset.card (fintype.elems G).val := 
+  begin
+    sorry,
+  end,
+  rw h1,
+  have h2 : multiset.count g (fintype.elems G).val = 1 := 
+  begin
+    -- fintype => no duplicates => count = 1 forall elts 
+    suggest,
+  end,
+  rw h2,
+  simp,
+end
