@@ -4,18 +4,7 @@
  -----------------------------------------------------------
 -/
 
-import data.bitvec.basic
-import data.zmod.basic 
-import measure_theory.probability_mass_function 
 import to_mathlib
-
-lemma zmod_ne_zero (n : ℕ) [fact (0 < n)] : (zmod.fintype n).elems.val ≠ 0 := 
-begin
-  apply (multiset.card_pos).mp,
-  have h : multiset.card (fintype.elems (zmod n)).val = n := zmod.card n,
-  rw h,
-  exact _inst_1.out,
-end
 
 lemma bitvec_ne_zero (n : ℕ) : (bitvec.fintype n).elems.val ≠ 0 := 
 begin
@@ -41,44 +30,49 @@ end
 
 noncomputable theory 
 
--- TO-DO remove n_pos hypothesis 
-def uniform_zmod (n : ℕ) [fact (0 < n)] : pmf (zmod n) := 
-  pmf.of_multiset (zmod.fintype n).elems.val (zmod_ne_zero n)
-
-def uniform_2 := uniform_zmod 2
-
-lemma uniform2_prob : uniform_2 1 = (0.5 : nnreal) := 
-begin
-  simp [uniform_2],
-  simp [uniform_zmod],
-  simp [pmf.of_multiset],
-  have h : multiset.card (fintype.elems (zmod 2)).val = 2 := rfl,
-  rw h,
-  sorry,
-end
-
 def uniform_bitvec (n : ℕ) : pmf (bitvec n) := 
   pmf.of_multiset (bitvec.fintype n).elems.val (bitvec_ne_zero n)
 
 def uniform_grp : pmf G := 
   pmf.of_multiset (fintype.elems G).val (grp_ne_zero G)
 
-theorem uniform_prob : ∀ (g : G), (uniform_grp G) g = 1 / multiset.card (fintype.elems G).val :=
+def uniform_zmod (n : ℕ) [fact (0 < n)] : pmf (zmod n) := uniform_grp (zmod n)
+
+def uniform_2 : pmf (zmod 2) := uniform_grp (zmod 2) 
+
+lemma uniform_grp_prob : ∀ (g : G), (uniform_grp G) g = 1 / multiset.card (fintype.elems G).val :=
 begin
   intro g,
-  simp [uniform_grp],
-  have h1 : 
-  (pmf.of_multiset (fintype.elems G).val (grp_ne_zero G)) g = 
+  have h1 : ⇑(uniform_grp G) = (λ (a : G), 
+    (multiset.count a (fintype.elems G).val : nnreal) / multiset.card (fintype.elems G).val) := 
+  begin 
+    ext,
+    simp [uniform_grp],
+    simp [pmf.of_multiset],
+    simp [coe_fn],
+    simp [has_coe_to_fun.coe],
+    congr,
+  end,
+  have h2 : (uniform_grp G) g = 
     multiset.count g (fintype.elems G).val / multiset.card (fintype.elems G).val := 
   begin
-    sorry,
-  end,
-  rw h1,
-  have h2 : multiset.count g (fintype.elems G).val = 1 := 
-  begin
-    -- fintype => no duplicates => count = 1 forall elts 
-    suggest,
+    exact congr_fun h1 g,
   end,
   rw h2,
+  have h3 : multiset.count g (fintype.elems G).val = 1 := 
+  begin
+    exact multiset.count_univ g,
+  end,
+  rw h3,
   simp,
+end 
+
+lemma uniform_zmod_prob (n : ℕ) [fact (0 < n)] : (uniform_zmod n) 1 = 1/n := 
+begin
+  simp [uniform_zmod],
+  have h1 := uniform_grp_prob (zmod n) 1,
+  have h2 : multiset.card (fintype.elems (zmod n)).val = n := zmod.card n,
+  rw h2 at h1,
+  rw inv_eq_one_div (n : nnreal),
+  exact h1,
 end

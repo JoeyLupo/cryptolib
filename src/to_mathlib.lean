@@ -1,4 +1,5 @@
 import data.bitvec.basic
+import data.zmod.basic 
 import group_theory.specific_groups.cyclic
 import measure_theory.probability_mass_function 
 
@@ -65,3 +66,18 @@ instance fintype : Π (n : ℕ), fintype (bitvec n) := by {intro n, exact vector
 lemma card (n : ℕ) : fintype.card (bitvec n) = 2^n := card_vector n
 
 end bitvec 
+
+
+
+/-
+ ---------------------------------------------------------
+  To data.basic.zmod, TO-DO Ask why this isn't already there
+ ---------------------------------------------------------
+-/
+
+namespace zmod 
+
+instance group : Π (n : ℕ) [fact (0 < n)], group (zmod n) := 
+  by {intros n h, exact multiplicative.group}
+
+end zmod 

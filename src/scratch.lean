@@ -100,3 +100,24 @@ def prob_pred (p : pmf α) (P : α → bool) : nnreal := ∑'(a : α), if P(a) t
      perhaps a simpler pmf (zmod 2)
 
 -/
+
+lemma uniform_2_prob : uniform_2 1 = (0.5 : nnreal) := 
+begin
+  simp [uniform_2, uniform_zmod, pmf.of_multiset],
+  simp [coe_fn],
+  simp [has_coe_to_fun.coe],
+  have h1 : multiset.count 1 (fintype.elems (zmod 2)).val = 1 := rfl,
+  have h2 : multiset.card (fintype.elems (zmod 2)).val = 2 := rfl,
+  have h3 : @multiset.count (zmod 2) (λ (a b : zmod 2), classical.prop_decidable (a = b)) 1
+      (@fintype.elems (zmod 2) (@zmod.fintype 2 uniform_2._proof_1)).val =
+    1 := 
+  begin
+    sorry,
+  end,
+  rw h2,
+  norm_cast,
+  rw inv_eq_one_div (2 : nnreal),
+  apply congr_arg (λ (a : nnreal), a / 2),
+  norm_cast,
+  exact h3,
+end
