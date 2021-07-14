@@ -67,10 +67,11 @@ begin
   simp,
 end 
 
-lemma uniform_zmod_prob (n : ℕ) [fact (0 < n)] : (uniform_zmod n) 1 = 1/n := 
+lemma uniform_zmod_prob {n : ℕ} [fact (0 < n)] : ∀ (a : zmod n), (uniform_zmod n) a = 1/n := 
 begin
+  intro a,
   simp [uniform_zmod],
-  have h1 := uniform_grp_prob (zmod n) 1,
+  have h1 := uniform_grp_prob (zmod n) a,
   have h2 : multiset.card (fintype.elems (zmod n)).val = n := zmod.card n,
   rw h2 at h1,
   rw inv_eq_one_div (n : nnreal),
