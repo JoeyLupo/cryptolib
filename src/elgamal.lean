@@ -12,16 +12,16 @@ noncomputable theory
 
 section elgamal
 
+-- deal with comm_group as a result of cyclic assumption 
 parameters (G : Type) [fintype G] [comm_group G] [decidable_eq G] 
            (g : G) (hGg : ∀ (x : G), x ∈ subgroup.gpowers g)
            (q : ℕ) [fact (0 < q)] (hGq : fintype.card G = q) 
 
 def M := G
 instance : comm_group M := _inst_2
-def C := G × G 
 
 parameters (A1 : G → pmf (M × M))
-           (A2 : G × C → pmf (zmod 2))
+           (A2 : G × G × G → pmf (zmod 2))
 
 -- g^x is the public key, and x is the secret key
 def keygen : pmf (G × (zmod q)) := 
@@ -30,15 +30,15 @@ do
   return (g^x.val, x)
 
 -- encrypt takes a pair (pk, m)
-def encrypt (m : G × M) : pmf C := 
+def encrypt (α : G) (m : M) : pmf (G × G) := 
 do
   y ← uniform_zmod q,
-  return (g^y.val, (m.1)^y.val * m.2)
+  return (g^y.val, α^y.val * m)
 
 -- TO-DO want zmod q × C, but want nicer way to 
 -- get at input than c.1.1
-def decrypt (x : zmod q) (c : C) : G := 
-  (c.2 / (c.1^x.val))
+def decrypt (x : zmod q) (β ζ : G) : G := 
+  (ζ / (β^x.val))
 
 
 
@@ -65,7 +65,7 @@ by { simp only [pure_eq_pure, pmf.pure_apply], split_ifs; refl }
 lemma bind_eq_bind {α β : Type*} (v : pmf α) (f : α → pmf β) :
   v >>= f = v.bind f := rfl
 
-lemma t1 (m : M) (x y: zmod q) : decrypt x (g^y.val, (g^x.val)^y.val * m) = m := 
+lemma t1 (m : M) (x y: zmod q) : decrypt x (g^y.val) ((g^x.val)^y.val * m) = m := 
 begin
   simp [decrypt],
   rw (pow_mul g x.val y.val).symm,
@@ -78,7 +78,7 @@ begin
 end
 
 lemma t2 (m : M) (x y: zmod q) : 
-  return (if decrypt x (g^y.val, (g^x.val)^y.val * m) = m then (1 : zmod 2) else 0) 
+  return (if decrypt x (g^y.val) ((g^x.val)^y.val * m) = m then (1 : zmod 2) else 0) 
   = (return 1 : pmf (zmod 2)) := 
 begin
   rw t1,
@@ -87,7 +87,7 @@ end
 
 def t3b (m : M) (x : zmod q): (zmod q) → pmf (zmod 2) := 
   (λ (y : zmod q), (return 
-  (if decrypt x (g ^ y.val, (g ^ x.val) ^ y.val * m) = m then (1 : zmod 2) else 0)))
+  (if decrypt x (g^y.val) ((g^x.val)^y.val * m) = m then (1 : zmod 2) else 0)))
 
 lemma t3a (m : M) (x : zmod q) : t3b m x = (λ (y : zmod q), (return 1) ):= 
 begin
@@ -100,7 +100,7 @@ end
 lemma t3 (m : M) (x : zmod q) : 
   (do 
     y ← uniform_zmod q, 
-    return (if decrypt x (g^y.val, (g^x.val)^y.val * m) = m then (1 : zmod 2) else 0)
+    return (if decrypt x (g^y.val) ((g^x.val)^y.val * m) = m then (1 : zmod 2) else 0)
   ) = return 1 := 
 begin
   rw <- t3b,
@@ -113,11 +113,11 @@ begin
 end
 
 variables (H : Type) (f : G → G → H)
-          (f1 : C → pmf H)
+          (f1 : (G × G) → pmf H)
           (f2 : zmod q → pmf (zmod 2))
           (f3 : G × (zmod q) → pmf (zmod 2))
 
-lemma enc_bind (m : M) (x : zmod q) : (encrypt (g^x.val, m)).bind f1 = 
+lemma enc_bind (m : M) (x : zmod q) : (encrypt (g^x.val) m).bind f1 = 
   (do 
     y ← uniform_zmod q, 
     f1 (g^y.val, (g^x.val)^y.val * m)
@@ -157,8 +157,8 @@ end
 
 lemma t4 (m : M) (x : zmod q) : 
   (do 
-    (β, ζ) ← encrypt(g^x.val, m), 
-    return (if decrypt x (β, ζ) = m then (1 : zmod 2) else 0)
+    (β, ζ) ← encrypt (g^x.val) m, 
+    return (if decrypt x β ζ = m then (1 : zmod 2) else 0)
   ) = return 1 := 
 begin
   simp [bind],
@@ -179,8 +179,8 @@ end
 lemma t5 (m : M) : 
   (do 
     x ← uniform_zmod q,
-    (β, ζ) ← encrypt(g^x.val, m), 
-    return (if decrypt x (β, ζ) = m then (1 : zmod 2) else 0)
+    (β, ζ) ← encrypt (g^x.val) m, 
+    return (if decrypt x β ζ = m then (1 : zmod 2) else 0)
   ) = return 1 := 
 begin
   simp [bind],
@@ -191,8 +191,8 @@ end
 def enc_dec (m : M) : pmf (zmod 2) := 
 do
   (α, x) ← keygen,
-  (β, ζ) ← encrypt(α, m),
-  return (if decrypt x (β, ζ) = m then 1 else 0)
+  (β, ζ) ← encrypt α m,
+  return (if decrypt x β ζ = m then 1 else 0)
 
 theorem elgamal_correct : ∀ (m : M), enc_dec m = return 1 := 
 begin
@@ -216,9 +216,36 @@ end
 parameters (ε : nnreal) 
            (DDH_G : DDH G g q A2 ε)
 
+
+/-
+def D : G × G × G → pmf (zmod 2) := prod.rec (λ (α β γ : G), 
+do 
+  r ← R, 
+  (m0, m1) ← A1(r, α),
+  b ← uniform_2,
+  ζ ← return (δ * mb), 
+  b' ← A2(r, α, β, ζ)
+  return (1 + b + b')
+)
+
+  claim : D (γ^x.val, γ^y.val, (γ^x.val)^y.val) = DDH0
+  claim : D (γ^x.val, γ^y.val, γ^z) = DDH1
+
+def DDH0 : pmf (zmod 2) := 
+do 
+  x ← uniform_zmod q,
+  y ← uniform_zmod q,
+  return (A (g^x.val, g^y.val, (g^x.val)^y.val))
+   
+  b0 ← A (g^x.val, g^y.val, g^(x*y).val),
+  b1 ← uniform_2,
+  return (1 + b0 + b1)
+-/
+
 theorem elgamal_secure :  is_semantically_secure keygen encrypt A1 A2 ε := 
 begin
   sorry,  
 end
+
 
 end elgamal
