@@ -38,18 +38,28 @@ def uniform_grp : pmf G :=
 
 def uniform_zmod (n : ℕ) [fact (0 < n)] : pmf (zmod n) := uniform_grp (zmod n)
 
-def uniform_2 : pmf (zmod 2) := uniform_grp (zmod 2) 
+def uniform_2 : pmf (zmod 2) := uniform_zmod 2 
 
-lemma uniform_grp_prob : ∀ (g : G), (uniform_grp G) g = 1 / multiset.card (fintype.elems G).val :=
+/-
+lemma uniform_grp_zmod (n : ℕ) [fact (0 < n)] : 
+(do 
+  x ← uniform_zmod n,
+  return (g^x.val)
+) = uniform_grp G := 
+begin
+  sorry,
+end
+-/
+
+lemma uniform_grp_prob : 
+  ∀ (g : G), (uniform_grp G) g = 1 / multiset.card (fintype.elems G).val :=
 begin
   intro g,
   have h1 : ⇑(uniform_grp G) = (λ (a : G), 
     (multiset.count a (fintype.elems G).val : nnreal) / multiset.card (fintype.elems G).val) := 
   begin 
     ext,
-    simp [uniform_grp],
-    simp [pmf.of_multiset],
-    simp [coe_fn],
+    simp [uniform_grp, pmf.of_multiset, coe_fn],
     simp [has_coe_to_fun.coe],
     congr,
   end,
@@ -59,15 +69,13 @@ begin
     exact congr_fun h1 g,
   end,
   rw h2,
-  have h3 : multiset.count g (fintype.elems G).val = 1 := 
-  begin
-    exact multiset.count_univ g,
-  end,
+  have h3 : multiset.count g (fintype.elems G).val = 1 := multiset.count_univ g,
   rw h3,
   simp,
 end 
 
-lemma uniform_zmod_prob {n : ℕ} [fact (0 < n)] : ∀ (a : zmod n), (uniform_zmod n) a = 1/n := 
+lemma uniform_zmod_prob {n : ℕ} [fact (0 < n)] : 
+  ∀ (a : zmod n), (uniform_zmod n) a = 1/n := 
 begin
   intro a,
   simp [uniform_zmod],

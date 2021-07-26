@@ -14,13 +14,13 @@ noncomputable theory
 /-
   G1 = public key space, G2 = private key space, 
   M = message space, C = ciphertext space 
+  A_state = type for state A1 passes to A2
 -/
-variables {G1 G2 M C : Type} 
+variables {G1 G2 M C A_state: Type} 
           (keygen : pmf (G1 × G2))
           (encrypt : G1 → M → pmf C)
-          -- TO-DO model state as in Petcher?
-          (A1 : G1 → pmf (M × M))
-          (A2 : G1 × C → pmf (zmod 2))
+          (A1 : G1 → pmf (M × M × A_state))
+          (A2 : C → A_state → pmf (zmod 2))
 
 /- 
   The semantic security game. 
@@ -28,11 +28,11 @@ variables {G1 G2 M C : Type}
 -/
 def SSG : pmf (zmod 2):= 
 do 
-  (pk, sk) ← keygen, 
-  (m0, m1) ← A1(pk),
+  k ← keygen, 
+  m ← A1 k.1, 
   b ← uniform_2,
-  c ← if b = 0 then encrypt pk m0 else encrypt pk m1,
-  b' ← A2(pk, c),
+  c ← encrypt k.1 (if b = 0 then m.1 else m.2.1),
+  b' ← A2 c m.2.2,
   return (1 + b + b')
 
 local notation `SSG_Adv` := abs ((SSG keygen encrypt A1 A2 1 : ℝ) - 1/2)

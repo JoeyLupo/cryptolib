@@ -18,16 +18,13 @@ variables (G : Type) [fintype G] [group G]
           (g : G) (hGg : ∀ (x : G), x ∈ subgroup.gpowers g) 
           (q : ℕ) [fact (0 < q)] (hGq : fintype.card G = q) 
           -- check Mario, 0 < q necessary for fintype.card?
-          -- A a variable or parameter? 
-          -- See https://leanprover.github.io/theorem_proving_in_lean/interacting_with_lean.html
-          -- Petcher uses variable and then in ElGamal specializes for their fixed group
           (A : G → G → G → pmf (zmod 2))
 
 def DDH0 : pmf (zmod 2) := 
 do 
   x ← uniform_zmod q,
   y ← uniform_zmod q,
-  b ← A (g^x.val) (g^y.val) (g^(x*y).val),
+  b ← A (g^x.val) (g^y.val) (g^(x.val * y.val)),
   return b
 
 def DDH1 : pmf (zmod 2) := 
