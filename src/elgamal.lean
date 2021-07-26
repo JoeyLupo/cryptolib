@@ -171,9 +171,38 @@ begin
   congr,
 end
 
+lemma exp_bij : function.bijective (λ (z : zmod q), g ^ z.val) := 
+begin
+  split,
+
+  { -- injectivity
+    intros x a hxa,
+    have h : g^x.val = g^a.val := sorry,
+
+    sorry,
+  },
+
+  { -- surjectivity
+
+    /-
+    intro y,
+    have h1 := subgroup.mem_gpowers_iff.mp (hGg y),
+    cases h1 with k hk,
+    use k,
+    simp [f_zmod_G],
+    -/
+    sorry,
+  },
+end
+
+lemma exp_mb_bij (mb : G) : function.bijective (λ (z : zmod q), g ^ z.val * mb) := 
+begin
+  sorry,
+end
+
 -- need function.bijective exp where exp is (λ (z : zmod q), g^z.val)
 -- and (λ (z : zmod q), g^z.val * mb) for fixed mb
-lemma G1_G2_lemma1(x : G) (exp : zmod q → G) : 
+lemma G1_G2_lemma1(x : G) (exp : zmod q → G) (exp_bij : function.bijective exp): 
   ∑' (z : zmod q), ite (x = exp z) (1 : nnreal) 0 = 1 := 
 begin
   sorry,
@@ -191,6 +220,8 @@ begin
   simp,
   apply or.intro_left,
   repeat {rw G1_G2_lemma1 x},
+  exact exp_bij,
+  exact exp_mb_bij mb,
 end
 
 lemma G1_G2_lemma3 (m : pmf G) : 
@@ -224,24 +255,7 @@ begin
   rw G1_G2_lemma3, 
 end
 
-lemma j (a x : zmod 2) : ite (a = 1 + x) (1 : nnreal) 0 = ite (a + 1 = x) 1 0 := 
-begin
-  fin_cases a with [0,1],
-
-  { -- a = 0
-    fin_cases x with [0,1],
-    simp [if_pos],
-    ring_nf,
-  }, 
-
-  { -- a = 1
-    fin_cases x with [0,1],
-    simp [if_pos],
-    repeat {ring_nf},
-  }, 
-end
-
-lemma Game2_lemma1 (b' : zmod 2) : 
+lemma G2_uniform_lemma (b' : zmod 2) : 
 uniform_2.bind (λ (b : zmod 2), pure (1 + b + b')) = uniform_2 :=
 begin
   fin_cases b' with [0,1],
@@ -253,12 +267,28 @@ begin
     rw uniform_zmod_prob a,
     simp_rw uniform_zmod_prob,
     simp [nnreal.tsum_mul_left],
+    have zmod_eq_comm : ∀ (x : zmod 2), (a = 1 + x) = (x = 1 + a) := 
+    begin
+      intro x,
+      fin_cases a with [0,1],
+
+      { -- a = 0
+        fin_cases x with [0,1],
+        simp,
+        ring_nf,
+      }, 
+
+      { -- a = 1
+        fin_cases x with [0,1],
+        simp [if_pos],
+        ring_nf,
+      },
+    end,
     have h : ∑' (x : zmod 2), (pure (1 + x) : pmf (zmod 2)) a = 1 := 
     begin
       simp [pure, pmf.pure, coe_fn, has_coe_to_fun.coe],
-      --simp_rw j a _,
-      --fin_cases a with [0,1],
-      sorry,
+      simp_rw zmod_eq_comm,
+      simp,
     end,
     rw h,
     simp,
@@ -293,7 +323,7 @@ begin
   intro ζ,
   apply bind_skip_const, 
   intro b',
-  exact Game2_lemma1 b',
+  exact Game2_uniform_lemma b',
 end
 
 parameters (ε : nnreal) 
