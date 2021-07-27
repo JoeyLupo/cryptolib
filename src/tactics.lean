@@ -9,8 +9,7 @@ do t ← tactic.target,
 
 -- meta def mysimp : tactic := `[simp [x,y,z]; refl]
 
-variables (A : Type)
-          (B : Type)
+variables (A B : Type)
           
 lemma bind_skip (p : pmf A) (f g : A → pmf B) : 
   (∀ (a : A), f a = g a) → p.bind f = p.bind g :=

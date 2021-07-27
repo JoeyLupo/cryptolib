@@ -173,39 +173,70 @@ end
 
 lemma exp_bij : function.bijective (λ (z : zmod q), g ^ z.val) := 
 begin
+  apply (fintype.bijective_iff_injective_and_card _).mpr,
   split,
 
-  { -- injectivity
+  { -- (λ (z : zmod q), g ^ z.val) injective
     intros x a hxa,
-    have h : g^x.val = g^a.val := sorry,
+    simp at hxa,
+    have h : x.val = a.val := sorry,
 
     sorry,
   },
 
-  { -- surjectivity
-
-    /-
-    intro y,
-    have h1 := subgroup.mem_gpowers_iff.mp (hGg y),
-    cases h1 with k hk,
-    use k,
-    simp [f_zmod_G],
-    -/
+  { -- fintype.card (zmod q) = fintype.card G
     sorry,
   },
+  exact zmod.fintype q,
+  exact _inst_1,
 end
 
 lemma exp_mb_bij (mb : G) : function.bijective (λ (z : zmod q), g ^ z.val * mb) := 
 begin
-  sorry,
+  have h : (λ (z : zmod q), g ^ z.val * mb) = 
+    ((λ (m : G), (m * mb)) ∘ (λ (z : zmod q), g ^ z.val)) := by simp,
+  rw h,
+  apply function.bijective.comp,
+
+  { -- (λ (m : G), (m * mb)) bijective
+    refine fintype.injective_iff_bijective.mp _,
+    intros x a hxa,
+    simp at hxa,
+    exact hxa,
+  },
+
+  { -- (λ (z : zmod q), g ^ z.val) bijective
+    exact exp_bij,
+  }
 end
 
--- need function.bijective exp where exp is (λ (z : zmod q), g^z.val)
--- and (λ (z : zmod q), g^z.val * mb) for fixed mb
-lemma G1_G2_lemma1(x : G) (exp : zmod q → G) (exp_bij : function.bijective exp): 
+lemma G1_G2_lemma1 (x : G) (exp : zmod q → G) (exp_bij : function.bijective exp) : 
   ∑' (z : zmod q), ite (x = exp z) (1 : nnreal) 0 = 1 := 
 begin
-  sorry,
+  have inv :=  function.bijective_iff_has_inverse.mp exp_bij,
+  cases inv with exp_inv,
+  have bij_eq : ∀ (z : zmod q), (x = exp z) = (z = exp_inv x) := 
+  begin
+    intro z,
+    simp,
+    split,
+
+    { -- (x = exp z) → (z = exp_inv x)
+      intro h,
+      have h1 : exp_inv x = exp_inv (exp z) := congr_arg exp_inv h,
+      rw inv_h.left z at h1,
+      exact h1.symm,
+    },
+
+    { -- (z = exp_inv x) → (x = exp z) 
+      intro h,
+      have h2 : exp z = exp (exp_inv x) := congr_arg exp h,
+      rw inv_h.right x at h2,
+      exact h2.symm,
+    },
+  end,
+  simp_rw bij_eq,
+  simp,
 end
 
 lemma G1_G2_lemma2 (mb : G) : 
@@ -323,7 +354,7 @@ begin
   intro ζ,
   apply bind_skip_const, 
   intro b',
-  exact Game2_uniform_lemma b',
+  exact G2_uniform_lemma b',
 end
 
 parameters (ε : nnreal) 
