@@ -105,7 +105,7 @@ do
   winning the semantic security game (i.e. guessing the correct bit), 
   w.r.t. ElGamal is equal to the probability of D winning the game DDH0. 
 -/
-theorem SSG_DDH0 : SSG keygen encrypt A1 A2' = DDH0 G g q D :=
+theorem SSG_DDH0 : SSG keygen encrypt A1 A2' =  DDH0 G g g_gen_G q G_card_q D :=
 begin
   simp only [SSG, DDH0, bind, keygen, encrypt, D],
   simp_rw pmf.bind_bind (uniform_zmod q),
@@ -144,7 +144,7 @@ do
   winning Game1 (i.e. guessing the correct bit) is equal to the 
   probability of D winning the game DDH1. 
 -/
-theorem Game1_DDH1 : Game1 = DDH1 G g q D := 
+theorem Game1_DDH1 : Game1 = DDH1 G g g_gen_G q G_card_q D := 
 begin
   simp only [DDH1, Game1, bind, D],
   bind_skip with x,
@@ -399,8 +399,6 @@ begin
 end
 
 parameters (ε : nnreal) 
-          -- TO-DO how to make this like a parameter? 
-           --(DDH_G : DDH G g q D ε)
 
 /- 
   The advantage of the attacker (i.e. the composition of A1 and A2) in
@@ -409,7 +407,7 @@ parameters (ε : nnreal)
   assumption holds for the group `G`, we conclude `ε` is negligble, and 
   therefore ElGamal is, by definition, semantically secure.
 -/
-theorem elgamal_secure (DDH_G : DDH G g q D ε) : 
+theorem elgamal_secure (DDH_G : DDH G g g_gen_G q G_card_q D ε) : 
   is_semantically_secure keygen encrypt A1 A2' ε := 
 begin
   simp only [is_semantically_secure],
