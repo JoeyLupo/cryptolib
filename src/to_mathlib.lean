@@ -1,6 +1,7 @@
 import data.bitvec.basic
 import data.zmod.basic 
 import group_theory.specific_groups.cyclic
+import group_theory.subgroup
 import measure_theory.probability_mass_function 
 
 /-
@@ -52,7 +53,6 @@ def is_cyclic.generator {G : Type} [group G] [is_cyclic G] (g : G): Prop :=
    ∀ (x : G), x ∈ subgroup.gpowers g
 
 
-
 /-
  ---------------------------------------------------------
   To bitvec.basic
@@ -81,3 +81,67 @@ instance group : Π (n : ℕ) [fact (0 < n)], group (zmod n) :=
   by {intros n h, exact multiplicative.group}
 
 end zmod 
+
+
+
+/-
+ ---------------------------------------------------------
+  To group_theory.subgroup (Already there, on newer update)
+ ---------------------------------------------------------
+-/
+
+namespace subgroup 
+
+variables {G : Type*} [group G]
+
+lemma mem_gpowers_iff {g h : G} : 
+  h ∈ subgroup.gpowers g ↔ ∃ (k : ℤ), g^k = h := iff.rfl 
+
+end subgroup
+
+
+
+/-
+ ---------------------------------------------------------
+  To nat
+ ---------------------------------------------------------
+-/
+
+lemma exists_mod_add_div (a b: ℕ) : ∃ (m : ℕ), a = a % b + b * m := 
+begin
+  use (a/b),
+  exact (nat.mod_add_div a b).symm,
+end
+
+
+
+/-
+ ---------------------------------------------------------
+  To group
+ ---------------------------------------------------------
+-/
+
+variables (G : Type) [fintype G] [group G]
+
+lemma inv_pow_eq_card_sub_pow (g : G) (m : ℕ) (h : m ≤ fintype.card G) :
+  (g ^ m)⁻¹ = g ^ (fintype.card G - m) := 
+begin
+  have h : (g ^ m) * g ^ (fintype.card G - m) = 1 := 
+  begin
+    rw <- pow_add,
+    rw nat.add_sub_of_le,
+    exact pow_card_eq_one, 
+    exact h,
+  end,
+  exact inv_eq_of_mul_eq_one h,
+end
+
+-- (Already there, on newer update as pow_eq_mod_card m )
+lemma pow_eq_mod_card (g : G) (m : ℕ) : g ^ m = g ^ (m % fintype.card G) :=
+begin
+  conv_lhs {rw <- nat.mod_add_div m (fintype.card G), rw pow_add},
+  rw pow_mul,
+  simp only [one_pow, pow_card_eq_one],
+  exact (self_eq_mul_right.mpr rfl).symm,
+end
+

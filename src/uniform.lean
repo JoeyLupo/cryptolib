@@ -40,17 +40,6 @@ def uniform_zmod (n : ℕ) [fact (0 < n)] : pmf (zmod n) := uniform_grp (zmod n)
 
 def uniform_2 : pmf (zmod 2) := uniform_zmod 2 
 
-/-
-lemma uniform_grp_zmod (n : ℕ) [fact (0 < n)] : 
-(do 
-  x ← uniform_zmod n,
-  return (g^x.val)
-) = uniform_grp G := 
-begin
-  sorry,
-end
--/
-
 lemma uniform_grp_prob : 
   ∀ (g : G), (uniform_grp G) g = 1 / multiset.card (fintype.elems G).val :=
 begin

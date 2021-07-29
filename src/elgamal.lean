@@ -13,12 +13,16 @@ import uniform
 
 section elgamal
 
+-- TO-DO make style in line with mathlib 
+
 noncomputable theory 
 
 parameters (G : Type) [fintype G] [comm_group G] [decidable_eq G] 
-           (g : G) (hGg : ∀ (x : G), x ∈ subgroup.gpowers g)
-           (q : ℕ) [fact (0 < q)] (hGq : fintype.card G = q) 
+           (g : G) (g_gen_G : ∀ (x : G), x ∈ subgroup.gpowers g)
+           (q : ℕ) [fact (0 < q)] (G_card_q : fintype.card G = q) 
            (A_state : Type)
+
+include g_gen_G G_card_q
 
 parameters (A1 : G → pmf (G × G × A_state))
            (A2 : G → G → A_state → pmf (zmod 2))
@@ -171,24 +175,93 @@ begin
   congr,
 end
 
-lemma exp_bij : function.bijective (λ (z : zmod q), g ^ z.val) := 
+lemma exp_bij : 
+  function.bijective (λ (z : zmod q), g ^ z.val) := 
 begin
-  apply (fintype.bijective_iff_injective_and_card _).mpr,
+  apply (fintype.bijective_iff_surjective_and_card _).mpr,
   split,
 
-  { -- (λ (z : zmod q), g ^ z.val) injective
-    intros x a hxa,
-    simp at hxa,
-    have h : x.val = a.val := sorry,
+  { -- (λ (z : zmod q), g ^ z.val) surjective
+    intro gz, 
+    have hz := subgroup.mem_gpowers_iff.mp (g_gen_G gz),
+    cases hz with z hz,
+    cases z,
 
-    sorry,
+    { -- Case : z = z' for (z : ℕ)
+      let zq := z % q,
+      use zq,
+      have h1 : (λ (z : zmod q), g ^ z.val) ↑zq = g ^ (zq : zmod q).val := rfl,
+      rw h1,
+      rw zmod.val_cast_of_lt,
+      {
+        have h2 : g ^ int.of_nat z = g ^ z := by simp,
+        rw h2 at hz,
+        rw <- hz,
+        have h3 : ∃ (m : ℕ), z = z % q + q * m := 
+        begin
+          use (z/q),
+          exact (nat.mod_add_div z q).symm,
+        end,
+        cases h3 with m hm,
+        rw hm,
+        -- TO-DO calc mode?
+        have h4 : g ^ (zq + q * m) = g ^ zq * g ^ (q * m) := by rw pow_add,
+        rw h4,
+        rw pow_mul,
+        rw <- G_card_q,
+        simp [pow_card_eq_one],
+      },
+      exact nat.mod_lt z _inst_4.out,
+    },
+
+    { -- Case : z = - (1 + z') for (z' : ℕ)
+      let zq := (q - (z + 1) % q ) % q,
+      use zq,
+      have h1 : (λ (z : zmod q), g ^ z.val) ↑zq = g ^ (zq : zmod q).val := rfl,
+      rw h1,
+      rw zmod.val_cast_of_lt,
+      {
+        rw <- hz,
+        rw gpow_neg_succ_of_nat,
+        have h1 : z.succ = z + 1 := rfl,
+        rw h1,
+        have h2 : g ^ (z + 1) = g ^ ((z + 1) % q) := 
+        begin
+          rw <- G_card_q,
+          exact pow_eq_mod_card G g (z + 1),
+        end,
+        rw h2,
+        have h3 : (z + 1) % q ≤ fintype.card G := 
+        begin
+          rw G_card_q,
+          apply le_of_lt,
+          exact nat.mod_lt _ _inst_4.out,
+        end,
+        have h4 : (g ^ ((z + 1) % q))⁻¹ = g ^ (q - ((z + 1) % q)) := 
+        begin
+          have h41 := inv_pow_eq_card_sub_pow G g _ h3,
+          rw G_card_q at h41,
+          exact h41,
+        end,
+        rw h4,
+        have h5 := exists_mod_add_div (q - (z + 1) % q) q,
+        cases h5 with m hm,
+        rw hm,
+        rw pow_add,
+        rw pow_mul,
+        rw <- G_card_q,
+        simp [pow_card_eq_one],
+        rw G_card_q,
+      },
+
+      exact nat.mod_lt _ _inst_4.out,  
+    },
   },
 
   { -- fintype.card (zmod q) = fintype.card G
-    sorry,
+    rw G_card_q,
+    exact zmod.card q,
   },
-  exact zmod.fintype q,
-  exact _inst_1,
 end
 
 lemma exp_mb_bij (mb : G) : function.bijective (λ (z : zmod q), g ^ z.val * mb) := 
@@ -254,12 +327,12 @@ begin
   exact exp_bij,
   exact exp_mb_bij mb,
 end
-
+ 
 lemma G1_G2_lemma3 (m : pmf G) : 
   m.bind (λ (mb : G), (uniform_zmod q).bind (λ (z : zmod q), pure (g^z.val * mb))) =
   (uniform_zmod q).bind (λ (z : zmod q), pure (g^z.val)) := 
 begin
-  simp_rw G1_G2_lemma2,
+  simp_rw G1_G2_lemma2 _,
   apply bind_skip_const,
   intro m,
   congr,
