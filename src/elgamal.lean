@@ -160,7 +160,6 @@ begin
   simp_rw pmf.bind_bind,
   bind_skip with mb,
   simp [pure],
-  congr,
 end
 
 lemma exp_bij : 

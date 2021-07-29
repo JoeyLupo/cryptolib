@@ -25,7 +25,7 @@ do
   x ← uniform_zmod q,
   y ← uniform_zmod q,
   b ← A (g^x.val) (g^y.val) (g^(x.val * y.val)),
-  return b
+  pure b
 
 def DDH1 : pmf (zmod 2) := 
 do 
@@ -33,7 +33,7 @@ do
   y ← uniform_zmod q,
   z ← uniform_zmod q,
   b ← A (g^x.val) (g^y.val) (g^z.val),
-  return b
+  pure b
 
 local notation `Pr[DDH0]` := (DDH0 G g g_gen_G q G_card_q A 1 : ℝ)
 local notation `Pr[DDH1]` := (DDH1 G g g_gen_G q G_card_q A 1 : ℝ)

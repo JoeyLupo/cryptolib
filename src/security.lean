@@ -33,7 +33,7 @@ do
   b ← uniform_2,
   c ← encrypt k.1 (if b = 0 then m.1 else m.2.1),
   b' ← A2 c m.2.2,
-  return (1 + b + b')
+  pure (1 + b + b')
 
 local notation `SSG_Adv` := abs ((SSG keygen encrypt A1 A2 1 : ℝ) - 1/2)
 
