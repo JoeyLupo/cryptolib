@@ -77,11 +77,9 @@ theorem elgamal_correct : ∀ (m : G), enc_dec m = pure 1 :=
 begin
   intro m,
   simp [enc_dec, keygen, encrypt, bind],
-  apply bind_skip_const,
-  intro x,
+  bind_skip_const with x,
   simp [pure],
-  apply bind_skip_const,
-  intro y,
+  bind_skip_const with y,
   simp_rw decrypt_eq_m,
   simp,
 end
@@ -111,16 +109,12 @@ theorem SSG_DDH0 : SSG keygen encrypt A1 A2' = DDH0 G g q D :=
 begin
   simp only [SSG, DDH0, bind, keygen, encrypt, D],
   simp_rw pmf.bind_bind (uniform_zmod q),
-  apply bind_skip,
-  intro x,
+  bind_skip with x,
   simp [pure],
   simp_rw pmf.bind_comm (uniform_zmod q),
-  apply bind_skip,
-  intro m,
-  apply bind_skip,
-  intro b,
-  apply bind_skip,
-  intro y,
+  bind_skip with m,
+  bind_skip with b,
+  bind_skip with y,
   simp only [A2'],
   rw pow_mul g x.val y.val,
 end
@@ -153,24 +147,18 @@ do
 theorem Game1_DDH1 : Game1 = DDH1 G g q D := 
 begin
   simp only [DDH1, Game1, bind, D],
-  apply bind_skip,
-  intro x,
-  apply bind_skip, 
-  intro y,
+  bind_skip with x,
+  bind_skip with y,
   simp_rw pmf.bind_bind (A1 _),
   conv_rhs {rw pmf.bind_comm (uniform_zmod q)},
-  apply bind_skip,
-  intro m,
+  bind_skip with m,
   simp_rw pmf.bind_bind (uniform_zmod q),
   conv_lhs {rw pmf.bind_comm (uniform_2)},
-  apply bind_skip,
-  intro z,
+  bind_skip with z,
   conv_rhs {rw pmf.bind_bind (uniform_2)},
-  apply bind_skip,
-  intro b,
+  bind_skip with b,
   simp_rw pmf.bind_bind,
-  apply bind_skip,
-  intro mb,
+  bind_skip with mb,
   simp [pure],
   congr,
 end
@@ -197,19 +185,24 @@ begin
         have h2 : g ^ int.of_nat z = g ^ z := by simp,
         rw h2 at hz,
         rw <- hz,
+        /-
         have h3 : ∃ (m : ℕ), z = z % q + q * m := 
         begin
           use (z/q),
           exact (nat.mod_add_div z q).symm,
         end,
         cases h3 with m hm,
-        rw hm,
+        -/
+        rw <- nat.mod_add_div z q,
+        --rw hm,
         -- TO-DO calc mode?
-        have h4 : g ^ (zq + q * m) = g ^ zq * g ^ (q * m) := by rw pow_add,
-        rw h4,
+        rw pow_add,
+        --have h4 : g ^ (zq + q * m) = g ^ zq * g ^ (q * m) := by rw pow_add,
+        --rw h4,
         rw pow_mul,
         rw <- G_card_q,
         simp [pow_card_eq_one],
+        rw G_card_q,
       },
       exact nat.mod_lt z _inst_4.out,
     },
@@ -333,8 +326,7 @@ lemma G1_G2_lemma3 (m : pmf G) :
   (uniform_zmod q).bind (λ (z : zmod q), pure (g^z.val)) := 
 begin
   simp_rw G1_G2_lemma2 _,
-  apply bind_skip_const,
-  intro m,
+  bind_skip_const with m,
   congr,
 end
 
@@ -346,17 +338,13 @@ end
 theorem Game1_Game2 : Game1 = Game2 := 
 begin
   simp only [Game1, Game2],
-  apply bind_skip,
-  intro x,
-  apply bind_skip,
-  intro y,
-  apply bind_skip,
-  intro m,
-  apply bind_skip,
-  intro b,
+  bind_skip with x,
+  bind_skip with y, 
+  bind_skip with m,
+  bind_skip with b,
   simp [bind, -pmf.bind_pure, -pmf.bind_bind],
   simp_rw pmf.bind_comm (uniform_zmod q),
-  rw G1_G2_lemma3, 
+  rw G1_G2_lemma3,
 end
 
 lemma G2_uniform_lemma (b' : zmod 2) : 
@@ -413,20 +401,14 @@ end
 theorem Game2_uniform : Game2 = uniform_2 :=
 begin
   simp [Game2, bind],
-  apply bind_skip_const,
-  intro x,
-  apply bind_skip_const,
-  intro m,
-  apply bind_skip_const,
-  intro y,
+  bind_skip_const with x,
+  bind_skip_const with m,
+  bind_skip_const with y,
   rw pmf.bind_comm uniform_2,
   simp_rw pmf.bind_comm uniform_2,
-  apply bind_skip_const,
-  intro z,
-  apply bind_skip_const,
-  intro ζ,
-  apply bind_skip_const, 
-  intro b',
+  bind_skip_const with z,
+  bind_skip_const with ζ,
+  bind_skip_const with b',
   exact G2_uniform_lemma b',
 end
 
