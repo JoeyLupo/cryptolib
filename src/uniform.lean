@@ -6,35 +6,15 @@
 
 import to_mathlib
 
-lemma bitvec_ne_zero (n : ℕ) : (bitvec.fintype n).elems.val ≠ 0 := 
-begin
-  apply (multiset.card_pos).mp,
-  have h : multiset.card (fintype.elems (bitvec n)).val = 2^n := bitvec.card n,
-  rw h,
-  simp,
-end
-
 variables (G : Type) [fintype G] [group G] [decidable_eq G]
-
-lemma grp_ne_zero : (fintype.elems G).val ≠ 0 := 
-begin
-  have e : G := (_inst_2.one),
-  have h1 : e ∈ (fintype.elems G).val :=  finset.mem_univ e,
-  have h2 : 0 < multiset.card (fintype.elems G).val := 
-  begin
-    apply (multiset.card_pos_iff_exists_mem).mpr,
-    exact Exists.intro e h1,
-  end,
-  exact multiset.card_pos.mp h2,
-end
 
 noncomputable theory 
 
 def uniform_bitvec (n : ℕ) : pmf (bitvec n) := 
-  pmf.of_multiset (bitvec.fintype n).elems.val (bitvec_ne_zero n)
+  pmf.of_multiset (bitvec.fintype n).elems.val (bitvec.multiset_ne_zero n)
 
 def uniform_grp : pmf G := 
-  pmf.of_multiset (fintype.elems G).val (grp_ne_zero G)
+  pmf.of_multiset (fintype.elems G).val (group.multiset_ne_zero G)
 
 def uniform_zmod (n : ℕ) [fact (0 < n)] : pmf (zmod n) := uniform_grp (zmod n)
 
