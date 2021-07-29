@@ -182,27 +182,17 @@ begin
       rw h1,
       rw zmod.val_cast_of_lt,
       {
-        have h2 : g ^ int.of_nat z = g ^ z := by simp,
-        rw h2 at hz,
-        rw <- hz,
-        /-
-        have h3 : ∃ (m : ℕ), z = z % q + q * m := 
-        begin
-          use (z/q),
-          exact (nat.mod_add_div z q).symm,
-        end,
-        cases h3 with m hm,
-        -/
-        rw <- nat.mod_add_div z q,
-        --rw hm,
-        -- TO-DO calc mode?
-        rw pow_add,
-        --have h4 : g ^ (zq + q * m) = g ^ zq * g ^ (q * m) := by rw pow_add,
-        --rw h4,
-        rw pow_mul,
-        rw <- G_card_q,
-        simp [pow_card_eq_one],
-        rw G_card_q,
+        have goal : gz = g ^ zq := 
+        calc
+           gz = g ^ int.of_nat z : hz.symm
+          ... = g ^ z  : by simp
+          ... = g ^ (z % q + q * (z / q)) : by rw nat.mod_add_div z q
+          ... = g ^ (z % q) * g ^ (q * (z / q)) : by rw pow_add
+          ... = g ^ (z % q) * (g ^ q) ^ (z / q) : by rw pow_mul
+          ... = g ^ (z % q) * (g ^ fintype.card G) ^ (z / q) : by rw <- G_card_q
+          ... = g ^ (z % q) : by simp [pow_card_eq_one]
+          ... = g ^ zq : rfl,
+        exact goal.symm, 
       },
       exact nat.mod_lt z _inst_4.out,
     },
@@ -214,37 +204,33 @@ begin
       rw h1,
       rw zmod.val_cast_of_lt,
       {
-        rw <- hz,
-        rw gpow_neg_succ_of_nat,
-        have h1 : z.succ = z + 1 := rfl,
-        rw h1,
-        have h2 : g ^ (z + 1) = g ^ ((z + 1) % q) := 
-        begin
-          rw <- G_card_q,
-          exact pow_eq_mod_card G g (z + 1),
-        end,
-        rw h2,
-        have h3 : (z + 1) % q ≤ fintype.card G := 
+        have h1 : (z + 1) % q ≤ fintype.card G := 
         begin
           rw G_card_q,
           apply le_of_lt,
           exact nat.mod_lt _ _inst_4.out,
         end,
-        have h4 : (g ^ ((z + 1) % q))⁻¹ = g ^ (q - ((z + 1) % q)) := 
-        begin
-          have h41 := inv_pow_eq_card_sub_pow G g _ h3,
-          rw G_card_q at h41,
-          exact h41,
-        end,
-        rw h4,
-        have h5 := exists_mod_add_div (q - (z + 1) % q) q,
-        cases h5 with m hm,
-        rw hm,
-        rw pow_add,
-        rw pow_mul,
-        rw <- G_card_q,
-        simp [pow_card_eq_one],
-        rw G_card_q,
+
+        have goal : gz = g ^ zq := 
+        calc
+           gz = g ^ int.neg_succ_of_nat z : hz.symm 
+          ... = (g ^ z.succ)⁻¹  : by rw gpow_neg_succ_of_nat
+          ... = (g ^ (z + 1))⁻¹ : rfl
+          ... = (g ^ ((z + 1) % fintype.card G))⁻¹ : by rw pow_eq_mod_card G g (z + 1)
+          ... = (g ^ ((z + 1) % q))⁻¹ : by rw G_card_q
+          ... = g ^ (fintype.card G - (z + 1) % q) : inv_pow_eq_card_sub_pow G g _ h1
+          ... = g ^ (q - ((z + 1) % q)) : by rw G_card_q
+          ... = g ^ ((q - (z + 1) % q) % q
+                  + q * ((q - (z + 1) % q) / q)) : by rw nat.mod_add_div
+          ... = g ^ ((q - (z + 1) % q) % q) 
+                  * g ^ (q * ((q - (z + 1) % q) / q)) : by rw pow_add
+          ... = g ^ ((q - (z + 1) % q) % q) 
+                  * (g ^ q) ^ ((q - (z + 1) % q) / q) : by rw pow_mul
+          ... = g ^ ((q - (z + 1) % q) % q) 
+                  * (g ^ fintype.card G) ^ ((q - (z + 1) % q) / q) : by rw <- G_card_q
+          ... = g ^ ((q - (z + 1) % q) % q) : by simp [pow_card_eq_one]
+          ... = g ^ zq : rfl,
+        exact goal.symm, 
       },
 
       exact nat.mod_lt _ _inst_4.out,  
