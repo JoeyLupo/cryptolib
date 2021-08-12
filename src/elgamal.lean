@@ -13,8 +13,6 @@ import uniform
 
 section elgamal
 
--- TO-DO make style in line with mathlib 
-
 noncomputable theory 
 
 parameters (G : Type) [fintype G] [comm_group G] [decidable_eq G] 
@@ -41,11 +39,11 @@ do
   y ← uniform_zmod q,
   pure (g^y.val, pk^y.val * m)
 
--- `x` is the secret key, `gy` is g^y, the first part of the 
--- cipher text returned from encrypt, and `c` is the 
+-- `x` is the secret key, `c.1` is g^y, the first part of the 
+-- cipher text returned from encrypt, and `c.2` is the 
 -- second value returned from encrypt
-def decrypt (x : zmod q) (gy c : G) : G := 
-  (c / (gy^x.val))
+def decrypt (x : zmod q)(c : G × G) : G := 
+	(c.2 / (c.1^x.val)) 
 
 
 
@@ -55,7 +53,7 @@ def decrypt (x : zmod q) (gy c : G) : G :=
   -----------------------------------------------------------
 -/
 
-lemma decrypt_eq_m (m : G) (x y: zmod q) : decrypt x (g^y.val) ((g^x.val)^y.val * m) = m := 
+lemma decrypt_eq_m (m : G) (x y: zmod q) : decrypt x ((g^y.val), ((g^x.val)^y.val * m)) = m := 
 begin
   simp [decrypt],
   rw (pow_mul g x.val y.val).symm,
@@ -67,14 +65,9 @@ begin
   exact one_mul m,
 end
 
-def enc_dec (m : G) : pmf (zmod 2) := 
-do 
-  k ← keygen,
-  c ← encrypt k.1 m,
-  pure (if decrypt k.2 c.1 c.2 = m then 1 else 0)
-
-theorem elgamal_correct : ∀ (m : G), enc_dec m = pure 1 := 
+theorem elgamal_correct : pke_correct keygen encrypt decrypt :=
 begin
+  simp [pke_correct],
   intro m,
   simp [enc_dec, keygen, encrypt, bind],
   bind_skip_const with x,
@@ -407,9 +400,9 @@ parameters (ε : nnreal)
   therefore ElGamal is, by definition, semantically secure.
 -/
 theorem elgamal_secure (DDH_G : DDH G g g_gen_G q G_card_q D ε) : 
-  is_semantically_secure keygen encrypt A1 A2' ε := 
+  pke_semantic_security keygen encrypt A1 A2' ε := 
 begin
-  simp only [is_semantically_secure],
+  simp only [pke_semantic_security],
   rw SSG_DDH0,
   have h : (((uniform_2) 1) : ℝ) = 1/2 := 
   begin
