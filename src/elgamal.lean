@@ -65,9 +65,9 @@ begin
   exact one_mul m,
 end
 
-theorem elgamal_correct : pke_correct keygen encrypt decrypt :=
+theorem elgamal_correctness : pke_correctness keygen encrypt decrypt :=
 begin
-  simp [pke_correct],
+  simp [pke_correctness],
   intro m,
   simp [enc_dec, keygen, encrypt, bind],
   bind_skip_const with x,
@@ -399,7 +399,7 @@ parameters (ε : nnreal)
   assumption holds for the group `G`, we conclude `ε` is negligble, and 
   therefore ElGamal is, by definition, semantically secure.
 -/
-theorem elgamal_secure (DDH_G : DDH G g g_gen_G q G_card_q D ε) : 
+theorem elgamal_semantic_security (DDH_G : DDH G g g_gen_G q G_card_q D ε) : 
   pke_semantic_security keygen encrypt A1 A2' ε := 
 begin
   simp only [pke_semantic_security],

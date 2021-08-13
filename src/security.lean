@@ -37,7 +37,7 @@ do
   A public-key encryption protocol is correct if decryption undoes 
   encryption with probability 1
 -/
-def pke_correct : Prop := ∀ (m : M), enc_dec keygen encrypt decrypt m = pure 1 
+def pke_correctness : Prop := ∀ (m : M), enc_dec keygen encrypt decrypt m = pure 1 
 
 /- 
   The semantic security game. 
