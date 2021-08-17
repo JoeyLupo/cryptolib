@@ -18,14 +18,14 @@ import data.real.basic
   n₀ ≤ n →  |f(n)| < 1/n^c
 -/
 def negligible (f : ℕ → ℝ) := 
-∀ c > 0, ∃ n₀, ∀ n, 
-n₀ ≤ n → abs (f n) <  1 / (n:ℝ)^c
+  ∀ c > 0, ∃ n₀, ∀ n, 
+  n₀ ≤ n → abs (f n) <  1 / (n : ℝ)^c
 
-def negligible2 (f : ℕ → ℝ) :=
-∀ (c:ℝ), ∃ (n₀:ℕ), ∀ (n:ℕ),
-0 < c → n₀ ≤ n → abs (f n) < 1 / n^c
+def negligible' (f : ℕ → ℝ) :=
+  ∀ (c : ℝ), ∃ (n₀ : ℕ), ∀ (n : ℕ),
+  0 < c → n₀ ≤ n → abs (f n) < 1 / n^c
 
-lemma negl_equiv (f : ℕ → ℝ) : negligible f ↔ negligible2 f := 
+lemma negl_equiv (f : ℕ → ℝ) : negligible f ↔ negligible' f := 
 begin
   split,
   {-- Forward direction
@@ -45,16 +45,16 @@ begin
     intros n c_pos hn,
     have hnnn : n' ≤ n := by linarith,
     
-    have b : (n:ℝ)^c ≤ (n:ℝ)^(k₀:ℝ) := 
+    have b : (n : ℝ)^c ≤ (n : ℝ)^(k₀ : ℝ) := 
     begin
       apply real.rpow_le_rpow_of_exponent_le,
       norm_cast,
       linarith,
       linarith,
     end,
-    have daf : (n:ℝ)^(k₀:ℝ) = (n:ℝ) ^ k₀ := (n:ℝ).rpow_nat_cast k₀,
+    have daf : (n : ℝ)^(k₀ : ℝ) = (n : ℝ)^k₀ := (n : ℝ).rpow_nat_cast k₀,
     rw daf at b,
-    have d : 1/(n:ℝ)^k₀ ≤ 1/n^c := 
+    have d : 1 / (n : ℝ)^k₀ ≤ 1 / n^c := 
     begin
       apply one_div_le_one_div_of_le,
       { -- Proving 0 < (n:ℝ) ^ c
@@ -66,7 +66,7 @@ begin
     end,
     have goal :  abs (f n) < 1 / n^c := 
     calc
-      abs(f n) < 1 / (n:ℝ) ^ k₀ : hn₀ n hnnn
+      abs(f n) < 1 / (n : ℝ)^k₀ : hn₀ n hnnn
            ... ≤ 1 / n^c : d,
     exact goal,
   },
@@ -77,11 +77,10 @@ begin
     use n₀,
     intros n hn,
     have goal := hn₀ n (nat.cast_pos.mpr hc) hn,
-    rw (n:ℝ).rpow_nat_cast c at goal,
+    rw (n : ℝ).rpow_nat_cast c at goal,
     exact goal,
   },
 end
-
 
 lemma zero_is_negl : negligible (λn, 0) := 
 begin
@@ -123,29 +122,28 @@ begin
   end,
   have tnr_pos : 0 < nr := by linarith,
 
-  have t2na : (1/nr) * (1/nr^c) ≤ (1/(2:ℝ)) * (1/nr^c) := 
+  have t2na : (1 / nr) * (1/nr^c) ≤ (1 / (2 : ℝ)) * (1 / nr^c) := 
   begin
-    have ht2 : 0 < (1/nr^c) := by {apply one_div_pos.mpr, exact pow_pos tnr_pos c},
+    have ht2 : 0 < (1 / nr^c) := by {apply one_div_pos.mpr, exact pow_pos tnr_pos c},
     apply (mul_le_mul_right ht2).mpr,
     apply one_div_le_one_div_of_le,
     exact zero_lt_two,
     exact t2nr,
   end,
 
-  have tnr2 : 1 / nr ^ (c + 1) ≤ (1/(2:ℝ)) * (1/nr^c) := 
+  have tnr2 : 1 / nr^(c + 1) ≤ (1 / (2 : ℝ)) * (1 / nr^c) := 
   calc
-    1 / nr ^ (c + 1) = (1/nr) ^ (c + 1) : by rw one_div_pow
-                 ... = (1/nr) * (1/nr)^c  : pow_succ (1 / nr) c
-                 ... = (1/nr) * (1/nr^c) : by rw one_div_pow
-                 ... ≤ (1/(2:ℝ)) * (1/nr^c) : t2na,
+    1 / nr ^ (c + 1) = (1 / nr)^(c + 1) : by rw one_div_pow
+                 ... = (1 / nr) * (1 / nr)^c  : pow_succ (1 / nr) c
+                 ... = (1 / nr) * (1 / nr^c) : by rw one_div_pow
+                 ... ≤ (1 / (2 : ℝ)) * (1 / nr^c) : t2na,
   
   have tnf : nf ≤ n :=
   calc 
     nf  ≤ n₀ : le_of_max_le_left tn
     ... ≤ n : hn,
   have tfn := hnf n tnf,
-  have tf : abs (f n) < (1/(2:ℝ)) * (1/nr^c) := by linarith,
-
+  have tf : abs (f n) < (1 / (2 : ℝ)) * (1 / nr^c) := by linarith,
 
   have tng : ng ≤ n :=
   calc ng  ≤ n₀ : le_of_max_le_right tn
@@ -172,10 +170,10 @@ begin
   cases hh with n₀ hn₀, 
   use n₀,
   intros n hn,
-  have goal : abs (f n) < 1 / (n:ℝ) ^ c := 
+  have goal : abs (f n) < 1 / (n : ℝ) ^ c := 
   calc 
     abs (f n) ≤ abs (g n) : h n
-          ... < 1 / (n:ℝ) ^ c: hn₀ n hn,
+          ... < 1 / (n : ℝ)^c: hn₀ n hn,
   exact goal,
 end
 
@@ -190,7 +188,8 @@ begin
   },
   { -- Inductive step
     norm_num,
-    have d : (λn, ((k:ℝ) + 1) * (f n)) = (λn, (k:ℝ) * (f n)) + (λn, f n) := by repeat {ring_nf},
+    have d : (λn, ((k : ℝ) + 1) * (f n)) = (λn, (k : ℝ) * (f n)) + (λn, f n) := 
+      by repeat {ring_nf},
     rw d, 
     apply negl_add_negl_is_negl,
     exact hk,
@@ -214,24 +213,22 @@ begin
 
   { -- Show kf bounds mf from above
     intro n,
-    have h : abs m ≤ abs (k:ℝ) := 
+    have h : abs m ≤ abs (k : ℝ) := 
     calc 
-      abs m ≤ (k:ℝ) : le_of_lt hk
-        ... = abs (k:ℝ) : (nat.abs_cast k).symm,
+      abs m ≤ (k : ℝ) : le_of_lt hk
+        ... = abs (k : ℝ) : (nat.abs_cast k).symm,
 
-    have goal : abs (m * f n) ≤ abs ((k:ℝ) * f n) := 
+    have goal : abs (m * f n) ≤ abs ((k : ℝ) * f n) := 
     calc 
       abs (m * f n) = abs m * abs (f n) : by rw abs_mul
-                ... ≤ abs (k:ℝ) * abs (f n) : mul_mono_nonneg (abs_nonneg (f n)) h
-                ... = abs ((k:ℝ) * f n) : by rw <- abs_mul,
+                ... ≤ abs (k : ℝ) * abs (f n) : mul_mono_nonneg (abs_nonneg (f n)) h
+                ... = abs ((k : ℝ) * f n) : by rw <- abs_mul,
       
     exact goal,
   },  
 end
 
---lemma lim_iff_negl (f: ℕ → ℝ): negligible f ↔ (∀c > 0, lim_n→∞ (f(n)*n^c) = 0) := by sorry
-
-theorem neg_exp_is_negl : negligible ((λn, (1:ℝ)/2^n) : ℕ → ℝ) := by sorry,
+theorem neg_exp_is_negl : negligible ((λn, (1 : ℝ) / 2^n) : ℕ → ℝ) := by sorry
 
 -- Need to prove lim n^c/2^n = 0 by induction on c using L'Hopital's rule to apply inductive 
 -- hypothesis
