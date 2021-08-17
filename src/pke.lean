@@ -52,6 +52,8 @@ do
   b' ← A2 c m.2.2,
   pure (1 + b + b')
 
-local notation `SSG_Adv` := abs ((SSG keygen encrypt A1 A2 1 : ℝ) - 1/2)
+-- SSG(A) denotes the event that A wins the semantic security game
+local notation `Pr[SSG(A)]` := (SSG keygen encrypt A1 A2 1 : ℝ)
 
-def pke_semantic_security (ε : nnreal) : Prop := SSG_Adv ≤ ε
+def pke_semantic_security (ε : nnreal) : Prop := abs (Pr[SSG(A)] - 1/2) ≤ ε 
+
