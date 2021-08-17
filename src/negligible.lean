@@ -82,7 +82,7 @@ begin
   },
 end
 
-lemma zero_is_negl : negligible (λn, 0) := 
+lemma zero_negl : negligible (λn, 0) := 
 begin
   intros c hc,
   use 1,
@@ -94,7 +94,7 @@ begin
   exact nat.cast_pos.mpr h,
 end
 
-lemma negl_add_negl_is_negl {f g : ℕ → ℝ} : negligible f → negligible g → negligible (f + g) := 
+lemma negl_add_negl_negl {f g : ℕ → ℝ} : negligible f → negligible g → negligible (f + g) := 
 begin
   intros hf hg,
   intros c hc,
@@ -161,7 +161,7 @@ begin
   exact goal,
 end
 
-lemma bounded_negl_is_negl {f g : ℕ → ℝ} (hg : negligible g): 
+lemma bounded_negl_negl {f g : ℕ → ℝ} (hg : negligible g): 
 (∀ n, abs (f n) ≤ abs (g n)) → negligible f := 
 begin
   intro h,
@@ -177,37 +177,37 @@ begin
   exact goal,
 end
 
-lemma nat_mul_negl_is_negl {f : ℕ → ℝ} (m : ℕ): 
+lemma nat_mul_negl_negl {f : ℕ → ℝ} (m : ℕ): 
 negligible f → negligible (λn, m * (f n)) := 
 begin
   intros hf,
   induction m with k hk,
   { -- Base case
     norm_num,
-    exact zero_is_negl,
+    exact zero_negl,
   },
   { -- Inductive step
     norm_num,
     have d : (λn, ((k : ℝ) + 1) * (f n)) = (λn, (k : ℝ) * (f n)) + (λn, f n) := 
       by repeat {ring_nf},
     rw d, 
-    apply negl_add_negl_is_negl,
+    apply negl_add_negl_negl,
     exact hk,
     exact hf,
   },
 end
 
-lemma const_mul_negl_is_negl {f : ℕ → ℝ} (m : ℝ) : 
+lemma const_mul_negl_negl {f : ℕ → ℝ} (m : ℝ) : 
 negligible f → negligible (λn, m * (f n)) := 
 begin
   intro hf,
   -- Use Archimedian property to get arch : ℕ with abs m < arch
   have arch := exists_nat_gt (abs m),
   cases arch with k hk,
-  apply bounded_negl_is_negl,
+  apply bounded_negl_negl,
 
   { -- Demonstrate a negligible function kf  
-    have kf_negl := nat_mul_negl_is_negl k hf,
+    have kf_negl := nat_mul_negl_negl k hf,
     exact kf_negl,
   },
 
@@ -228,7 +228,7 @@ begin
   },  
 end
 
-theorem neg_exp_is_negl : negligible ((λn, (1 : ℝ) / 2^n) : ℕ → ℝ) := by sorry
+theorem neg_exp_negl : negligible ((λn, (1 : ℝ) / 2^n) : ℕ → ℝ) := by sorry
 
 -- Need to prove lim n^c/2^n = 0 by induction on c using L'Hopital's rule to apply inductive 
 -- hypothesis
