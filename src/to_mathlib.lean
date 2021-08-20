@@ -33,7 +33,6 @@ instance : is_lawful_monad pmf :=
  ---------------------------------------------------------
 -/
 
--- TO-DO name? 
 lemma range_pos_ne_zero (n : ℕ) (n_pos : 0 < n): multiset.range n ≠ 0 := 
 begin
   apply (multiset.card_pos).mp,

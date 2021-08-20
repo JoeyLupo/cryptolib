@@ -34,7 +34,7 @@ do
   pure (g^x.val, x)
 
 -- encrypt takes a pair (public key, message)
-def encrypt (pk m: G) : pmf (G × G) := 
+def encrypt (pk m : G) : pmf (G × G) := 
 do
   y ← uniform_zmod q,
   pure (g^y.val, pk^y.val * m)
