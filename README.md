@@ -2,7 +2,15 @@
 
 Formal proof of correctness and game-based proof of semantic security for the ElGamal public key encryption protocol using the Lean theorem prover. Our implementation draws from Adam Petcher's Foundational Cryptographic Framework (FCF) Coq library at https://github.com/adampetcher/fcf. My master's dissertation which describes this project in more depth can be found [here](https://1drv.ms/b/s!AkAJTM1hbeSD4wcF1T4NYiRG5b_D?e=0Yp8Hx).
 
-Files in cryptolib:
+## Install cryptolib
+
+```console
+$ git clone https://github.com/JoeyLupo/cryptolib
+$ cd cryptolib
+$ leanproject build
+```
+
+## Files in cryptolib
 
 - `ddh.lean` - provides a formal specification of the decisional Diffie-Hellman assumption on a finite cyclic group
 	
