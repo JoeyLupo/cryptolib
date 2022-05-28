@@ -5,7 +5,6 @@
 -/
 
 import data.zmod.basic
-import measure_theory.probability_mass_function
 import to_mathlib
 import uniform
 

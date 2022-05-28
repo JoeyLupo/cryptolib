@@ -7,7 +7,6 @@
  -----------------------------------------------------------
 -/
 
-import analysis.special_functions.exp_log
 import analysis.special_functions.pow
 import data.nat.basic
 import data.real.basic

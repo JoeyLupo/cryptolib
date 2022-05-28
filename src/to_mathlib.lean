@@ -1,31 +1,12 @@
 import data.bitvec.basic
 import data.zmod.basic 
 import group_theory.specific_groups.cyclic
-import group_theory.subgroup
-import measure_theory.probability_mass_function 
-
-/-
- ---------------------------------------------------------
-  To measure_theory.probability_mass_function 
-  with help from Yakov Pechersky 
- ---------------------------------------------------------
--/
-
-noncomputable theory
-
-instance : monad pmf := 
-{ pure := @pmf.pure,
-  bind := @pmf.bind }
-
-instance : is_lawful_functor pmf :=
-{ id_map := @pmf.map_id,
-  comp_map := λ _ _ _ f g x, (pmf.map_comp x f g).symm }
-
-instance : is_lawful_monad pmf :=
-{ pure_bind := @pmf.pure_bind,
-  bind_assoc := @pmf.bind_bind }
-
-
+import group_theory.subgroup.basic
+import group_theory.subgroup.pointwise
+import group_theory.order_of_element
+import measure_theory.probability_mass_function.basic
+import measure_theory.probability_mass_function.constructions
+import measure_theory.probability_mass_function.monad
 
 /-
  ---------------------------------------------------------
@@ -49,7 +30,7 @@ end
 -/
 
 def is_cyclic.generator {G : Type} [group G] [is_cyclic G] (g : G): Prop :=
-   ∀ (x : G), x ∈ subgroup.gpowers g
+   ∀ (x : G), x ∈ subgroup.zpowers g
 
 
 /-
@@ -102,7 +83,7 @@ namespace subgroup
 variables {G : Type*} [group G]
 
 lemma mem_gpowers_iff {g h : G} : 
-  h ∈ subgroup.gpowers g ↔ ∃ (k : ℤ), g^k = h := iff.rfl 
+  h ∈ subgroup.zpowers g ↔ ∃ (k : ℤ), g^k = h := iff.rfl 
 
 end subgroup
 
@@ -157,13 +138,4 @@ begin
     exact h,
   end,
   exact inv_eq_of_mul_eq_one h,
-end
-
--- (Already there, on newer update as pow_eq_mod_card m )
-lemma pow_eq_mod_card (g : G) (m : ℕ) : g ^ m = g ^ (m % fintype.card G) :=
-begin
-  conv_lhs {rw <- nat.mod_add_div m (fintype.card G), rw pow_add},
-  rw pow_mul,
-  simp only [one_pow, pow_card_eq_one],
-  exact (self_eq_mul_right.mpr rfl).symm,
 end
