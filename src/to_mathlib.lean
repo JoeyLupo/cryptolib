@@ -74,23 +74,6 @@ end zmod
 
 /-
  ---------------------------------------------------------
-  To group_theory.subgroup (Already there, on newer update)
- ---------------------------------------------------------
--/
-
-namespace subgroup 
-
-variables {G : Type*} [group G]
-
-lemma mem_gpowers_iff {g h : G} : 
-  h ∈ subgroup.zpowers g ↔ ∃ (k : ℤ), g^k = h := iff.rfl 
-
-end subgroup
-
-
-
-/-
- ---------------------------------------------------------
   To nat
  ---------------------------------------------------------
 -/
