@@ -163,7 +163,7 @@ begin
 
   { -- (λ (z : zmod q), g ^ z.val) surjective
     intro gz, 
-    have hz := subgroup.mem_gpowers_iff.mp (g_gen_G gz),
+    have hz := subgroup.mem_zpowers_iff.mp (g_gen_G gz),
     cases hz with z hz,
     cases z,
 
