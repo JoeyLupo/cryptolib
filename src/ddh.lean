@@ -4,7 +4,6 @@
  -----------------------------------------------------------
 -/
 
-import measure_theory.probability_mass_function 
 import to_mathlib
 import uniform
 
@@ -13,7 +12,7 @@ noncomputable theory
 section DDH
 
 variables (G : Type) [fintype G] [group G]
-          (g : G) (g_gen_G : ∀ (x : G), x ∈ subgroup.gpowers g) 
+          (g : G) (g_gen_G : ∀ (x : G), x ∈ subgroup.zpowers g)
           (q : ℕ) [fact (0 < q)] (G_card_q : fintype.card G = q) 
           -- check Mario, 0 < q necessary for fintype.card?
           (D : G → G → G → pmf (zmod 2))
