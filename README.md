@@ -27,3 +27,5 @@ $ leanproject build
 - `uniform.lean` - defines the uniform distribution over a finite group as a pmf, including the special case of Z_q, the integers modulo q, and provides two useful lemmas regarding uniform probabilities 
 
 - `rsa.lean` - contains proof of correctness of the RSA public key encryption protocol
+
+- `substitution.lean` - contains basic formalization and proof of correctness of different substitution ciphers
