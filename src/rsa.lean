@@ -111,7 +111,7 @@ begin
     end,
   cases msg_zero_or_gt with eq_zero gt_zero,
   { rw [←eq_zero, zero_pow one_le_mul_pub_e_priv],
-    simp },
+    simp only [nat.zero_mod]},
   { conv
     begin
       to_lhs,
@@ -152,7 +152,7 @@ begin
         repeat {rw nat.mod_eq_of_lt (nat.prime.one_lt prime_p)
                 <|> rw nat.mod_eq_of_lt (nat.prime.one_lt prime_q)
                 <|> rw one_pow},
-        simp,
+        simp only [mul_one, nat.mod_mod],
       },
     },
     -- TODO use meta tactics to combine these two similar parts
@@ -163,7 +163,7 @@ begin
         rw ←nat.prime.dvd_iff_not_coprime prime_p at np,
         rw [←nat.modeq_zero_iff_dvd, nat.modeq] at np,
         rw [mul_mod_right_distrib, np],
-        simp,
+        simp only [nat.zero_mod, zero_mul],
       },
       { have msg_coprime_p : msg.coprime p := begin
           rw [nat.coprime_comm, nat.prime.coprime_iff_not_dvd prime_p],
@@ -186,7 +186,7 @@ begin
         rw h₃ msg_coprime_p,
         repeat {rw nat.mod_eq_of_lt (nat.prime.one_lt prime_p)
           <|> rw one_pow},
-        simp,
+        simp only [mul_one, nat.mod_mod],
       },
     },
     { cases ncoprime with np nq,
@@ -211,7 +211,7 @@ begin
         rw h₃ msg_coprime_q,
         repeat {rw nat.mod_eq_of_lt (nat.prime.one_lt prime_q)
           <|> rw one_pow},
-        simp,
+        simp only [mul_one, nat.mod_mod],
       },
       { rw [nat.totient_mul (nat.coprime.symm p_coprime_q),
            pow_mul,
@@ -219,7 +219,7 @@ begin
         rw ←nat.prime.dvd_iff_not_coprime prime_q at nq,
         rw [←nat.modeq_zero_iff_dvd, nat.modeq] at nq,
         rw [mul_mod_right_distrib, nq],
-        simp,
+        simp only [nat.zero_mod, zero_mul],
       },
     },
   },
