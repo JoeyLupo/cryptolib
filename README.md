@@ -12,20 +12,20 @@ $ leanproject build
 
 ## Files in cryptolib
 
-- `ddh.lean` - provides a formal specification of the decisional Diffie-Hellman assumption on a finite cyclic group
+- [ddh.lean](src/ddh.lean) - provides a formal specification of the decisional Diffie-Hellman assumption on a finite cyclic group
 	
-- `elgamal.lean` - contains the formal specification of the ElGamal public key encryption protocol, and the formal proofs of correctness and semantic 
+- [elgamal.lean](src/elgamal.lean) - contains the formal specification of the ElGamal public key encryption protocol, and the formal proofs of correctness and semantic 
     
-- `negligible.lean` - defines negligible functions and provides several useful lemmas regarding negligible functions
+- [negligible.lean](src/negligible.lean) - defines negligible functions and provides several useful lemmas regarding negligible functions
 
-- `pke.lean` - provides formal definitions for correctness and semantic security of a public key encryption scheme
+- [pke.lean](src/pke.lean) - provides formal definitions for correctness and semantic security of a public key encryption scheme
 
-- `tactics.lean` - provides the `bindskip` and `bindconst` tactics to help prove equivalences between pmfs
+- [tactics.lean](src/tactics.lean) - provides the `bindskip` and `bindconst` tactics to help prove equivalences between pmfs
 
-- `to_mathlib.lean` - includes general lemmas for inclusion into mathlib
+- [to_mathlib.lean](src/to_mathlib.lean) - includes general lemmas for inclusion into mathlib
 
-- `uniform.lean` - defines the uniform distribution over a finite group as a pmf, including the special case of Z_q, the integers modulo q, and provides two useful lemmas regarding uniform probabilities 
+- [uniform.lean](src/uniform.lean) - defines the uniform distribution over a finite group as a pmf, including the special case of Z_q, the integers modulo q, and provides two useful lemmas regarding uniform probabilities 
 
-- `rsa.lean` - contains proof of correctness of the RSA public key encryption protocol
+- [rsa.lean](src/rsa.lean) - contains proof of correctness of the RSA public key encryption protocol
 
-- `substitution.lean` - contains basic formalization and proof of correctness of different substitution ciphers
+- [substitution.lean](src/substitution.lean) - contains basic formalization and proof of correctness of different substitution ciphers
