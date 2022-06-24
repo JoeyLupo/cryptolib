@@ -29,3 +29,5 @@ $ leanproject build
 - `rsa.lean` - contains proof of correctness of the RSA public key encryption protocol
 
 - `substitution.lean` - contains basic formalization and proof of correctness of different substitution ciphers
+
+- `stream.lean` - contains basic formalization and proof of correctness of stream ciphers
