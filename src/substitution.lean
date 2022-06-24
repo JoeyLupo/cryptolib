@@ -4,7 +4,6 @@
  -----------------------------------------------------------
 -/
 
-import data.int.modeq
 import data.zmod.basic
 
 import uniform
