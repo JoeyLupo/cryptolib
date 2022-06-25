@@ -50,7 +50,7 @@ begin
   apply (multiset.card_pos).mp,
   have h : multiset.card (fintype.elems (bitvec n)).val = 2^n := bitvec.card n,
   rw h,
-  simp,
+  simp only [pow_pos, nat.succ_pos'],
 end
 
 end bitvec 

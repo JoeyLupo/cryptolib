@@ -71,7 +71,7 @@ begin
   simp [pure],
   bind_skip_const with y,
   simp_rw decrypt_eq_m,
-  simp,
+  simp only [eq_self_iff_true, if_true],
 end
 
 

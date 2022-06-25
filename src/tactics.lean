@@ -8,7 +8,7 @@ lemma bind_skip' (p : pmf α) (f g : α → pmf β) :
 begin
   intro ha, 
   ext,
-  simp,
+  simp only [pmf.bind_apply, nnreal.coe_eq],
   simp_rw ha,
 end
 
@@ -17,7 +17,7 @@ lemma bind_skip_const' (pa : pmf α) (pb : pmf β) (f : α → pmf β) :
 begin
   intro ha, 
   ext,
-  simp,
+  simp only [pmf.bind_apply, nnreal.coe_eq],
   simp_rw ha,
   simp [nnreal.tsum_mul_right],
 end
