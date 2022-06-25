@@ -109,16 +109,3 @@ begin
 end
 
 end group 
-
-lemma inv_pow_eq_card_sub_pow (g : G) (m : ℕ) (h : m ≤ fintype.card G) :
-  (g ^ m)⁻¹ = g ^ (fintype.card G - m) := 
-begin
-  have h : (g ^ m) * g ^ (fintype.card G - m) = 1 := 
-  begin
-    rw <- pow_add,
-    rw nat.add_sub_of_le,
-    exact pow_card_eq_one, 
-    exact h,
-  end,
-  exact inv_eq_of_mul_eq_one h,
-end

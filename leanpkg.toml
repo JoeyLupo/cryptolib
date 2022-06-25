@@ -1,8 +1,8 @@
 [package]
 name = "cryptolib"
 version = "0.1"
-lean_version = "leanprover-community/lean:3.42.0"
+lean_version = "leanprover-community/lean:3.43.0"
 path = "src"
 
 [dependencies]
-mathlib = {git = "https://github.com/leanprover-community/mathlib", rev = "b83bd25df297ae8d73fb7e4a3e252d3609f0ff6d"}
+mathlib = {git = "https://github.com/leanprover-community/mathlib", rev = "07c83c81c0016c1ac08e8c9c3f1260c2f4c6ac7f"}
