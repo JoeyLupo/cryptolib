@@ -1,11 +1,9 @@
 /-
  -----------------------------------------------------------
-  Security games as pmfs 
+  PKE correctness using pmfs 
  -----------------------------------------------------------
 -/
 
-import data.zmod.basic
-import to_mathlib
 import uniform
 
 noncomputable theory 
@@ -37,22 +35,3 @@ do
   encryption with probability 1
 -/
 def pke_correctness : Prop := ∀ (m : M), enc_dec keygen encrypt decrypt m = pure 1 
-
-/- 
-  The semantic security game. 
-  Returns 1 if the attacker A2 guesses the correct bit
--/
-def SSG : pmf (zmod 2):= 
-do 
-  k ← keygen, 
-  m ← A1 k.1, 
-  b ← uniform_2,
-  c ← encrypt k.1 (if b = 0 then m.1 else m.2.1),
-  b' ← A2 c m.2.2,
-  pure (1 + b + b')
-
--- SSG(A) denotes the event that A wins the semantic security game
-local notation `Pr[SSG(A)]` := (SSG keygen encrypt A1 A2 1 : ℝ)
-
-def pke_semantic_security (ε : nnreal) : Prop := abs (Pr[SSG(A)] - 1/2) ≤ ε 
-
