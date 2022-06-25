@@ -40,7 +40,7 @@ begin
   rw h2,
   have h3 : multiset.count g (fintype.elems G).val = 1 := multiset.count_univ g,
   rw h3,
-  simp,
+  simp only [nat.cast_one],
 end 
 
 lemma uniform_zmod_prob {n : ℕ} [fact (0 < n)] : 
