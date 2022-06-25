@@ -4,10 +4,8 @@
  -----------------------------------------------------------
 -/
 
-import ddh
 import pke
 import tactics 
---import to_mathlib
 import uniform
 
 section elgamal
