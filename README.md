@@ -31,3 +31,5 @@ $ leanproject build
 - [substitution.lean](src/substitution.lean) - contains basic formalization and proof of correctness of different substitution ciphers
 
 - [stream.lean](src/stream.lean) - contains basic formalization and proof of correctness of stream ciphers
+
+- [block.lean](src/block.lean) - contains basic formalization and proof of correctness of block ciphers
