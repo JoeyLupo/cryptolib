@@ -53,6 +53,15 @@ begin
   simp only [pow_pos, nat.succ_pos'],
 end
 
+-- missing bitvec lemmas used in streams ciphers. 
+-- TODO: they need proof
+lemma add_self (n : ℕ) (a : bitvec n) : a + a = bitvec.zero n := by sorry
+lemma add_assoc (n : ℕ) (a b c: bitvec n) : a + b + c = a + (b + c) := by sorry
+lemma zero_add (n : ℕ) (a : bitvec n) : a = bitvec.zero n + a := by sorry
+lemma add_self_assoc (n : ℕ) (a b : bitvec n) : b = a + (a + b) :=
+  by rw [←add_assoc, add_self, ←zero_add]
+
+
 end bitvec 
 
 
