@@ -10,7 +10,7 @@ import linear_algebra.matrix.nonsingular_inverse
 
 open_locale matrix
 
-section hill
+namespace hill
 
 -- Hill cipher: A generalization of the affine cipher
 --
