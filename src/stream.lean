@@ -46,12 +46,12 @@ def encrypt : bitvec n := xv + kv
 def decrypt : bitvec n := yv + kv
 
 -- proof of correctness
-lemma dec_undoes_enc_stream : 
+lemma dec_undoes_enc : 
   xv = decrypt n kv (encrypt n kv xv) :=
 begin
   unfold encrypt,
   unfold decrypt,
-  rw ← bitvec.add_self_assoc,
+  rw ←bitvec.add_self_assoc,
 end
 
 end stream_bits
