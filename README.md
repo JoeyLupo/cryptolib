@@ -34,7 +34,7 @@ $ leanproject build
 
 - [block.lean](src/block.lean) - contains basic formalization and proof of correctness of block ciphers
 
-- [feistel.lean](src/block.lean) - Proof of correctness for feitsel ciphers
+- [feistel.lean](src/feistel.lean) - Proof of correctness for feitsel ciphers
 
 - [dlp.lean](src/dlp.lean) - Formalization of the discrete logarithm problem
 
