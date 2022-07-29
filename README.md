@@ -37,3 +37,5 @@ $ leanproject build
 - [feistel.lean](src/block.lean) - Proof of correctness for feitsel ciphers
 
 - [dlp.lean](src/dlp.lean) - Formalization of the discrete logarithm problem
+
+- [galois.lean](src/galois.lean) - Bitwise arithmetic in GF(2^n)
