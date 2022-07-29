@@ -7,7 +7,7 @@ import data.vector.basic
 /- All operations are done in GF(2^3) -/
 def n : ℕ := 3
 
-/- Values in GF(2^n) represent the decimal range [0..7] -/
+/- Values in GF(2^3) represent the decimal range [0..7] -/
 def zero : bitvec n := 0
 def one : bitvec n := 1
 def two : bitvec n := 2
