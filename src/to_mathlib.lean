@@ -4,9 +4,10 @@ import group_theory.specific_groups.cyclic
 import group_theory.subgroup.basic
 import group_theory.subgroup.pointwise
 import group_theory.order_of_element
-import measure_theory.probability_mass_function.basic
-import measure_theory.probability_mass_function.constructions
-import measure_theory.probability_mass_function.monad
+import probability.probability_mass_function.basic
+import probability.probability_mass_function.constructions
+import probability.probability_mass_function.monad
+import probability.probability_mass_function.uniform
 
 /-
  ---------------------------------------------------------
