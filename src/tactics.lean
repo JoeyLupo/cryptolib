@@ -1,5 +1,5 @@
-import measure_theory.probability_mass_function.basic
-import measure_theory.probability_mass_function.constructions
+import probability.probability_mass_function.basic
+import probability.probability_mass_function.constructions
 
 variables {α β : Type}
 
