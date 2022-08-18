@@ -39,3 +39,5 @@ $ leanproject build
 - [dlp.lean](src/dlp.lean) - Formalization of the discrete logarithm problem
 
 - [galois.lean](src/galois.lean) - Bitwise arithmetic in GF(2^n)
+
+- [otp.lean](src/otp.lean) - One-Time Pad correctness
