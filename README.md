@@ -42,4 +42,4 @@ $ leanproject build
 
 - [otp.lean](src/otp.lean) - One-Time Pad correctness
 
-- [lfsr.lean] - Implement a very basic Linear-Feedback Shift Register for random number generator. 
+- [lfsr.lean](src/lfsr.lean) - Implement a very basic Linear-Feedback Shift Register that can be used as a random number generator. 
