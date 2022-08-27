@@ -41,3 +41,5 @@ $ leanproject build
 - [galois.lean](src/galois.lean) - Bitwise arithmetic in GF(2^n)
 
 - [otp.lean](src/otp.lean) - One-Time Pad correctness
+
+- [lfsr.lean] - Implement a very basic Linear-Feedback Shift Register for random number generator. 
