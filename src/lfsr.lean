@@ -19,7 +19,7 @@ def n : ℕ := 4
 def seed_for_generator : ℕ := 44343344
 
 -- An initial state, can be anything except "b0000".
-def initial_state : bitvec n := (rand_nat (mk_std_gen seed_for_generator) 1 16).1
+def initial_state : bitvec n := bitvec.of_nat n (rand_nat (mk_std_gen seed_for_generator) 1 16).1
 
 -- Taps located at bit 4 and 3.
 -- Feed polynomial is then x^4 + x^3 + 1: 1100 (https://en.wikipedia.org/wiki/Linear-feedback_shift_register#Example_polynomials_for_maximal_LFSRs)
