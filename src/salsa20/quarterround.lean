@@ -18,9 +18,17 @@ def z2 (y0 y1 y2 y3 : bitvec word_len) : bitvec 32 :=
 def z3 (y0 y1 y2 y3 : bitvec word_len) :  bitvec 32 := 
   bitvec.xor y3 (rotate13 (nat_as_bitvec (mod_as_nat (sum_as_mod (z2 y0 y1 y2 y3) (z1 y0 y1 y2 y3)))))
 
--- z4
+-- z0
 def z0 (y0 y1 y2 y3 : bitvec word_len) : bitvec 32 := 
   bitvec.xor y0 (rotate18 (nat_as_bitvec (mod_as_nat (sum_as_mod (z3 y0 y1 y2 y3) (z2 y0 y1 y2 y3)))))
+
+def quarterround (y0 y1 y2 y3 : bitvec word_len) : list (bitvec 32) :=
+  do
+    let z1_res := z1 y0 y1 y2 y3,
+    let z2_res := z2 y0 y1 y2 y3,
+    let z3_res := z3 y0 y1 y2 y3,
+    let z0_res := z0 y0 y1 y2 y3,
+    [z0_res, z1_res, z2_res, z3_res]
 
 -- Examples from the spec
 
@@ -55,15 +63,19 @@ def y3 : bitvec word_len := 0x00000000
 
 #eval (z1 y0 y1 y2 y3).to_nat
 #eval 0x00000080
+#eval ((quarterround y0 y1 y2 y3).tail).head.to_nat
 
 #eval (z2 y0 y1 y2 y3).to_nat
 #eval 0x00010200
+#eval ((quarterround y0 y1 y2 y3).tail.tail).head.to_nat
 
 #eval (z3 y0 y1 y2 y3).to_nat
 #eval 0x20500000
+#eval ((quarterround y0 y1 y2 y3).tail.tail.tail).head.to_nat
 
 #eval (z0 y0 y1 y2 y3).to_nat
 #eval 0x08008145
+#eval ((quarterround y0 y1 y2 y3).head).to_nat
 
 end example2
 
@@ -77,15 +89,19 @@ def y3 : bitvec word_len := 0x00000000
 
 #eval (z1 y0 y1 y2 y3).to_nat
 #eval 0x00000001
+#eval ((quarterround y0 y1 y2 y3).tail).head.to_nat
 
 #eval (z2 y0 y1 y2 y3).to_nat
 #eval 0x00000200
+#eval ((quarterround y0 y1 y2 y3).tail.tail).head.to_nat
 
 #eval (z3 y0 y1 y2 y3).to_nat
 #eval 0x00402000
+#eval ((quarterround y0 y1 y2 y3).tail.tail.tail).head.to_nat
 
 #eval (z0 y0 y1 y2 y3).to_nat
 #eval 0x88000100
+#eval ((quarterround y0 y1 y2 y3).head).to_nat
 
 end example3
 
@@ -99,15 +115,19 @@ def y3 : bitvec word_len := 0x00000000
 
 #eval (z1 y0 y1 y2 y3).to_nat
 #eval 0x00000000
+#eval ((quarterround y0 y1 y2 y3).tail).head.to_nat
 
 #eval (z2 y0 y1 y2 y3).to_nat
 #eval 0x00000001
+#eval ((quarterround y0 y1 y2 y3).tail.tail).head.to_nat
 
 #eval (z3 y0 y1 y2 y3).to_nat
 #eval 0x00002000
+#eval ((quarterround y0 y1 y2 y3).tail.tail.tail).head.to_nat
 
 #eval (z0 y0 y1 y2 y3).to_nat
 #eval 0x80040000
+#eval ((quarterround y0 y1 y2 y3).head).to_nat
 
 end example4
 
@@ -121,15 +141,19 @@ def y3 : bitvec word_len := 0x00000001
 
 #eval (z1 y0 y1 y2 y3).to_nat
 #eval 0x00000080
+#eval ((quarterround y0 y1 y2 y3).tail).head.to_nat
 
 #eval (z2 y0 y1 y2 y3).to_nat
 #eval 0x00010000
+#eval ((quarterround y0 y1 y2 y3).tail.tail).head.to_nat
 
 #eval (z3 y0 y1 y2 y3).to_nat
 #eval 0x20100001
+#eval ((quarterround y0 y1 y2 y3).tail.tail.tail).head.to_nat
 
 #eval (z0 y0 y1 y2 y3).to_nat
 #eval 0x00048044
+#eval ((quarterround y0 y1 y2 y3).head).to_nat
 
 end example5
 
@@ -143,15 +167,19 @@ def y3 : bitvec word_len := 0x68c67137
 
 #eval (z1 y0 y1 y2 y3).to_nat
 #eval 0x9361dfd5
+#eval ((quarterround y0 y1 y2 y3).tail).head.to_nat
 
 #eval (z2 y0 y1 y2 y3).to_nat
 #eval 0xf1460244
+#eval ((quarterround y0 y1 y2 y3).tail.tail).head.to_nat
 
 #eval (z3 y0 y1 y2 y3).to_nat
 #eval 0x948541a3
+#eval ((quarterround y0 y1 y2 y3).tail.tail.tail).head.to_nat
 
 #eval (z0 y0 y1 y2 y3).to_nat
 #eval 0xe876d72b
+#eval ((quarterround y0 y1 y2 y3).head).to_nat
 
 end example6
 
@@ -165,14 +193,18 @@ def y3 : bitvec word_len := 0x8f887a3b
 
 #eval (z1 y0 y1 y2 y3).to_nat
 #eval 0xd90a8f36
+#eval ((quarterround y0 y1 y2 y3).tail).head.to_nat
 
 #eval (z2 y0 y1 y2 y3).to_nat
 #eval 0x6ab2a923
+#eval ((quarterround y0 y1 y2 y3).tail.tail).head.to_nat
 
 #eval (z3 y0 y1 y2 y3).to_nat
 #eval 0x2883524c
+#eval ((quarterround y0 y1 y2 y3).tail.tail.tail).head.to_nat
 
 #eval (z0 y0 y1 y2 y3).to_nat
 #eval 0x3e2f308c
+#eval ((quarterround y0 y1 y2 y3).head).to_nat
 
 end example7
