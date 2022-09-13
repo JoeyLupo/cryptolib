@@ -1,8 +1,6 @@
 /-
-
   Section 3 : The quarterround function
   http://cr.yp.to/snuffle/spec.pdf
-
 -/
 import salsa20.words
 
@@ -208,3 +206,5 @@ def y3 : bitvec word_len := 0x8f887a3b
 #eval ((quarterround y0 y1 y2 y3).head).to_nat
 
 end example7
+
+-- TODO: quarterround is invertible

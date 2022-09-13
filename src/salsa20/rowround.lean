@@ -220,3 +220,5 @@ def y15 : bitvec word_len := 0xbc6e965a
 #eval 0x1818882d
 
 end example4_2
+
+-- TODO: matrix form

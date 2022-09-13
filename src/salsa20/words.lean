@@ -1,6 +1,4 @@
 /-
-  Salsa20
-
   Section 2 : Words
   http://cr.yp.to/snuffle/spec.pdf
 
