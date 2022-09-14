@@ -45,3 +45,5 @@ $ leanproject build
 - [lfsr.lean](src/lfsr.lean) - Implement a very basic Linear-Feedback Shift Register that can be used as a random number generator. 
 
 - [modes.lean](src/modes.lean) - Formalize some modes of operations for block ciphers.
+
+- [salsa20/](src/salsa20/) - Attempt to formalize salsa20 from the spec.
