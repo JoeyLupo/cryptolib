@@ -9,18 +9,18 @@ def z1 (y0 y1 y2 y3 : bitvec word_len) : bitvec word_len :=
   bitvec.xor y1 (rotate7 (nat_as_bitvec (mod_as_nat (sum_as_mod y0 y3))))
 
 -- z2
-def z2 (y0 y1 y2 y3 : bitvec word_len) : bitvec 32 := 
+def z2 (y0 y1 y2 y3 : bitvec word_len) : bitvec word_len := 
   bitvec.xor y2 (rotate9 (nat_as_bitvec (mod_as_nat (sum_as_mod (z1 y0 y1 y2 y3) y0))))
 
 -- z3
-def z3 (y0 y1 y2 y3 : bitvec word_len) :  bitvec 32 := 
+def z3 (y0 y1 y2 y3 : bitvec word_len) : bitvec word_len := 
   bitvec.xor y3 (rotate13 (nat_as_bitvec (mod_as_nat (sum_as_mod (z2 y0 y1 y2 y3) (z1 y0 y1 y2 y3)))))
 
 -- z0
-def z0 (y0 y1 y2 y3 : bitvec word_len) : bitvec 32 := 
+def z0 (y0 y1 y2 y3 : bitvec word_len) : bitvec word_len := 
   bitvec.xor y0 (rotate18 (nat_as_bitvec (mod_as_nat (sum_as_mod (z3 y0 y1 y2 y3) (z2 y0 y1 y2 y3)))))
 
-def quarterround (y0 y1 y2 y3 : bitvec word_len) : list (bitvec 32) :=
+def quarterround (y0 y1 y2 y3 : bitvec word_len) : list (bitvec word_len) :=
   do
     let z1_res := z1 y0 y1 y2 y3,
     let z2_res := z2 y0 y1 y2 y3,
