@@ -16,9 +16,11 @@ def uniform_bitvec (n : ℕ) : pmf (bitvec n) :=
 def uniform_grp : pmf G := 
   pmf.of_multiset (fintype.elems G).val (group.multiset_ne_zero G)
 
-def uniform_zmod (n : ℕ) [fact (0 < n)] : pmf (zmod n) := uniform_grp (zmod n)
+#print uniform_grp
 
-def uniform_2 : pmf (zmod 2) := uniform_zmod 2 
+def uniform_zmod (n : ℕ) [ne_zero n] [group (zmod n)] : pmf (zmod n) := uniform_grp (zmod n)
+
+def uniform_2 [group (zmod 2)]: pmf (zmod 2) := uniform_zmod 2 
 
 lemma uniform_grp_prob : 
   ∀ (g : G), (uniform_grp G) g = 1 / multiset.card (fintype.elems G).val :=
@@ -43,7 +45,7 @@ begin
   simp only [nat.cast_one],
 end 
 
-lemma uniform_zmod_prob {n : ℕ} [fact (0 < n)] : 
+lemma uniform_zmod_prob {n : ℕ} [ne_zero n] [group (zmod n)] : 
   ∀ (a : zmod n), (uniform_zmod n) a = 1/n := 
 begin
   intro a,

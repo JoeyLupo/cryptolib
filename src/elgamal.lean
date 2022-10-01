@@ -14,7 +14,7 @@ noncomputable theory
 
 parameters (G : Type) [fintype G] [comm_group G] [decidable_eq G] 
            (g : G) (g_gen_G : ∀ (x : G), x ∈ subgroup.zpowers g)
-           (q : ℕ) [fact (0 < q)] (G_card_q : fintype.card G = q) 
+           (q : ℕ) [ne_zero q] [group (zmod q)] (G_card_q : fintype.card G = q) 
            (A_state : Type)
 
 include g_gen_G G_card_q
